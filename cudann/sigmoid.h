@@ -14,10 +14,12 @@ class Sigmoid {
         double *x;
         double *fx;
         double *dfx;
-        bool first_call = true;
+
+        // Number of features
+        int n_features;
 
         // Initialize the Sigmoid Layer
-        Sigmoid(const std::string name="Sigmoid");
+        Sigmoid(const int n_features, const std::string name="Sigmoid");
 
         // Print layer name
         void show();

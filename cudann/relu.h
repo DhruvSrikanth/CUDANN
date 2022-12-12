@@ -8,16 +8,15 @@
 class ReLU {
     public:
         // Initialize the ReLU Layer
+        int n_features;
         double *x;
         double *fx;
         double *dfx;
 
-        bool first_call = false;
-
         // Layer name
         std::string name;
 
-    ReLU(const std::string name="ReLU");
+    ReLU(const int n_features, const std::string name="ReLU");
 
     // Print layer information
     void show();

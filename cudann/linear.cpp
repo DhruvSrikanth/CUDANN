@@ -28,10 +28,7 @@ Linear::Linear(const int in_features, const int out_features, const bool bias, c
     // Set layer name
     this->name = name;
 
-    // Initialize input, output, input gradient, weight gradient and bias gradient
-    initialize_zeros(&this->x, this->in_features);
-    initialize_zeros(&this->fx, this->out_features);
-    initialize_zeros(&this->dfx, this->in_features);
+    // Initialize the weight and bias gradients
     initialize_zeros(&this->dW, this->in_features * this->out_features);
     if (this->bias_flag) {
         initialize_zeros(&this->db, this->out_features);
@@ -40,16 +37,23 @@ Linear::Linear(const int in_features, const int out_features, const bool bias, c
 
 // Print layer information
 void Linear::show() {
-    std::printf("%s: %d -> %d\n", this->name, this->in_features, this->out_features);
+    std::printf("%s: [%d -> %d]\n", this->name, this->in_features, this->out_features);
 }
 
 // Forward call
 double* Linear::forward(const double *input) {
     // Copy input to x
-    memcpy(this->x, input, this->in_features * sizeof(double));
+    const int in_size = sizeof(input) / sizeof(input[0]);
+    this->x = new double[in_size];
+    memcpy(this->x, input, in_size * sizeof(double));
 
-    // Compute linear transformation
-    linear_transformation(&this->out_features, &this->in_features, this->weight, this->x, this->bias, this->fx, &this->bias_flag);
+    // Allocate memory for output and output gradient
+    const int out_size = this->out_features * in_size / this->in_features;
+    this->fx = new double[out_size];
+    this->dfx = new double[out_size];
+
+    // Compute linear transformation on the batch
+    linear_transformation_batch(this->out_features, this->in_features, this->weight, this->x, this->bias, this->fx, this->bias_flag, in_size);
 
     // Return output
     return this->fx;
@@ -59,7 +63,6 @@ double* Linear::forward(const double *input) {
 double* Linear::backward(const double *upstream_grad) {
     // Compute linear transformation gradient
     linear_transformation_grad(upstream_grad, &this->out_features, &this->in_features, this->weight, this->x, this->bias, this->dfx, this->dW, this->db, &this->bias_flag);
-
 
     // Return output gradient
     return this->dfx;
@@ -82,22 +85,33 @@ void Linear::update_params(const double lr) {
     }
 }
 
-// Linear transformation - fx(1, out) = W(in x out) x x(1, out) + b (1, out)
-void linear_transformation(const int *out_features, const int *in_features, const double* weight, const double* x, const double* bias, double* fx, const bool *bias_flag) {
+// Linear transformation on a batch - fx(b, out) = W(in x out) x x(b, out) + bias (b, out)
+void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag, const int in_size) {
+    const int batch_size = in_size / in_features;
+    
+    // Compute linear transformation on the batch
+    for (int b = 0; b < batch_size; b++) {
+        // Compute linear transformation for each example
+        linear_transformation(b, out_features, in_features, weight, x, bias, fx, bias_flag, in_size);
+    }
+}
+
+// Linear transformation - fx(out) = W(in x out) x x(in) + bias (out)
+void linear_transformation(const int b, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag, const int in_size) {
     // Compute linear transformation
-    for (int i = 0; i < *out_features; i++) {
+    for (int i = 0; i < out_features; i++) {
 
         // Reset fx for each output neuron
-        fx[i] = 0.0;
+        fx[b * out_features + i] = 0.0;
 
         // Get the dot product of weight and input
-        for (int j = 0; j < *in_features; j++) {
-            fx[i] += weight[(i * *in_features)+ j] * x[j];
+        for (int j = 0; j < in_features; j++) {
+            fx[b * out_features + i] += weight[(i * in_features)+ j] * x[b * in_features + j];
         }
 
         // Add bias
-        if (*bias_flag) {
-            fx[i] += bias[i];
+        if (bias_flag) {
+            fx[b * out_features + i] += bias[b * out_features + i];
         }
     }
 }

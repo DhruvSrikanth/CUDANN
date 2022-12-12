@@ -3,12 +3,13 @@
 #include <cmath>
 #include "sigmoid.h"
 
-        // Initialize the Sigmoid Layer
-Sigmoid::Sigmoid(const std::string name="Sigmoid") {
+// Initialize the Sigmoid Layer
+Sigmoid::Sigmoid(const int n_features, const std::string name="Sigmoid") {
     // Set layer name
     this->name = name;
 
     // Initialize input, output, input gradient and output gradient
+    this->n_features = n_features;
     this->x = NULL;
     this->fx = NULL;
     this->dfx = NULL;
@@ -16,25 +17,21 @@ Sigmoid::Sigmoid(const std::string name="Sigmoid") {
 
 // Print layer name
 void Sigmoid::show() {
-    std::printf("%s\n", this->name);
+    std::printf("%s: [%d]\n", this->name, this->n_features);
 }
 
 // Forward call
 double* Sigmoid::forward(const double *input) {
     const int size = sizeof(input) / sizeof(input[0]);
 
-    // Copy input to x
-    if (this->first_call) {
-        this->x = new double[size];
-        this->fx = new double[size];
-        this->dfx = new double[size];
-        this->first_call = false;
-    }
+    this->x = new double[size];
+    this->fx = new double[size];
+    this->dfx = new double[size];
 
     memcpy(this->x, input, size * sizeof(double));
 
     // Compute sigmoid transformation
-    sigmoid_transformation(size, this->x, this->fx);
+    sigmoid_activation_batch(this->x, this->fx, size, this->n_features);
 
     // Return output
     return this->fx;
@@ -48,24 +45,41 @@ double* Sigmoid::backward(const double *upstream_grad) {
     memcpy(this->dfx, upstream_grad, size * sizeof(double));
 
     // Compute sigmoid gradient
-    sigmoid_gradient(size, this->fx, this->dfx);
+    sigmoid_gradient_batch(this->fx, this->dfx, size, this->n_features);
 
     // Return output
     return this->dfx;
 }
     
-// Sigmoid transformation - y = 1 / (1 + e^-x)
-void sigmoid_transformation(const int size, const double *x, double *fx) {
-    // Perform sigmoid transformation
-    for (int i = 0; i < size; i++) {
-        fx[i] = 1 / (1 + std::exp(-x[i]));
+// Sigmoid activation on batch - y(b, n_features) = 1 / (1 + e^-x) (b, n_features)
+void sigmoid_activation_batch(const double *x, double *fx, const int size, const int n_features) {
+    // Perform sigmoid activation on each batch
+    const int batch_size = size / n_features;
+    for (int b = 0; b < batch_size; b++) {
+        sigmoid_activation(b, x, fx, n_features);
+    }
+}
+
+// Sigmoid activation - y = 1 / (1 + e^-x)
+void sigmoid_activation(const int b, const double *x, double *fx, const int n_features) {
+    // Compute sigmoid activation
+    for (int i = 0; i < n_features; i++) {
+        fx[b * n_features + i] = 1 / (1 + exp(-x[b * n_features + i]));
+    }
+}
+
+// Sigmoid gradient on batch - y(b, n_features) = fx * (1 - fx) (b, n_features)
+void sigmoid_gradient_batch(const double *fx, double *dfx, const int size, const int n_features) {
+    // Compute sigmoid gradient
+    for (int b = 0; b < size; b++) {
+        sigmoid_gradient(b, fx, dfx, n_features);
     }
 }
 
 // Sigmoid gradient - y = fx * (1 - fx)
-void sigmoid_gradient(const int size, const double *fx, double *dfx) {
+void sigmoid_gradient(const int b, const double *fx, double *dfx, const int n_features) {
     // Compute sigmoid gradient
-    for (int i = 0; i < size; i++) {
-        dfx[i] *= fx[i] * (1 - fx[i]);
+    for (int i = 0; i < n_features; i++) {
+        dfx[b * n_features + i] = fx[b * n_features + i] * (1 - fx[b * n_features + i]);
     }
 }
