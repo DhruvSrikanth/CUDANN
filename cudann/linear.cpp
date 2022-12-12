@@ -7,7 +7,7 @@
 
 
 // Initialize the Perceptron Layer
-Linear::Linear(int in_features, int out_features, bool bias, std::string initialization, std::string name="Linear") {
+Linear::Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name="Linear") {
     // Set layer size
     this->in_features = in_features;
     this->out_features = out_features;

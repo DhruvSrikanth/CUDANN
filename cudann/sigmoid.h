@@ -17,7 +17,7 @@ class Sigmoid {
         bool first_call = true;
 
         // Initialize the Sigmoid Layer
-        Sigmoid(std::string name="Sigmoid");
+        Sigmoid(const std::string name="Sigmoid");
 
         // Print layer name
         void show();

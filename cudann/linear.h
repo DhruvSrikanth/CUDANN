@@ -32,7 +32,7 @@ class Linear {
         double *db;
     
         // Initialize the Perceptron Layer
-        Linear(int in_features, int out_features, bool bias, std::string initialization, std::string name);
+        Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name);
 
         // Print layer name
         void show();

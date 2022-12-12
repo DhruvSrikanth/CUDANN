@@ -4,7 +4,7 @@
 #include "sigmoid.h"
 
         // Initialize the Sigmoid Layer
-Sigmoid::Sigmoid(std::string name="Sigmoid") {
+Sigmoid::Sigmoid(const std::string name="Sigmoid") {
     // Set layer name
     this->name = name;
 
