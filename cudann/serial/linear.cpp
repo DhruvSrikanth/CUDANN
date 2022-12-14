@@ -32,9 +32,11 @@ Linear::Linear(const int in_features, const int out_features, const bool bias, c
     // Initialize the weight, bias and mean gradients
     this->dW = (double*) malloc(this->in_features * this->out_features * sizeof(double));
     this->mean_dW = (double*) malloc(this->in_features * this->out_features * sizeof(double));
+    initialize_zeros(&this->mean_dW, this->in_features * this->out_features);
     if (this->bias_flag) {
         this->db = (double*) malloc(this->out_features * sizeof(double));
         this->mean_db = (double*) malloc(this->out_features * sizeof(double));
+        initialize_zeros(&this->mean_db, this->out_features);
     }
 
     // Initialize the input, output and input gradient
