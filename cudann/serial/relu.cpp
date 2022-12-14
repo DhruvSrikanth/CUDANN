@@ -13,9 +13,16 @@ ReLU::ReLU(const int n_features, const std::string name="Sigmoid") {
     this->name = name;
 
     // Initialize input, output, input gradient and output gradient
-    this->x = NULL;
-    this->fx = NULL;
-    this->dfx = NULL;
+    this->x = (double*) malloc(n_features * sizeof(double));
+    this->fx = (double*) malloc(n_features * sizeof(double));
+    this->dfx = (double*) malloc(n_features * sizeof(double));
+}
+
+// Destructor
+ReLU::~ReLU() {
+    free(this->x);
+    free(this->fx);
+    free(this->dfx);
 }
 
 // Print layer
@@ -26,10 +33,9 @@ void ReLU::show() {
 double* ReLU::forward(const double *input) {
     const int size = sizeof(input) / sizeof(input[0]);
 
-    this->x = new double[size];
-    this->fx = new double[size];
-    this->dfx = new double[size];
-
+    // Reallocate memory for input, output and input gradient
+    this->x = (double*) realloc(this->x, size * sizeof(double));
+    this->fx = (double*) realloc(this->fx, size * sizeof(double));
     memcpy(this->x, input, size * sizeof(double));
 
     // Compute relu activation
@@ -44,6 +50,7 @@ double* ReLU::backward(const double *upstream_grad) {
     const int size = sizeof(upstream_grad) / sizeof(upstream_grad[0]);
 
     // Copy upstream gradient to dfx
+    this->dfx = (double*) realloc(this->dfx, size * sizeof(double));
     memcpy(this->dfx, upstream_grad, size * sizeof(double));
 
     // Compute relu gradient
@@ -56,8 +63,8 @@ double* ReLU::backward(const double *upstream_grad) {
 // ReLU activation on a batch - y (b, n_features) = max(0, x) (b, n_features)
 void relu_activation_batch(const double *x, double *fx, const int size, const int n_features) {
     // Perform ReLU activation on each batch
-    const int batch_size = size / n_features;
-    for (int b = 0; b < batch_size; b++) {
+    const int n_batches = size / n_features;
+    for (int b = 0; b < n_batches; b++) {
         relu_activation(b, x, fx, n_features);
     }
     
@@ -78,8 +85,8 @@ void relu_activation(const int b, const double *x, double *fx, const int n_featu
 // ReLU gradient on a batch - y (b, n_features) = max(0, x) (b, n_features)
 void relu_gradient_batch(const double *x, double *dfx, const int size, const int n_features) {
     // Perform ReLU gradient on each batch
-    const int batch_size = size / n_features;
-    for (int b = 0; b < batch_size; b++) {
+    const int n_batches = size / n_features;
+    for (int b = 0; b < n_batches; b++) {
         relu_gradient(b, x, dfx, n_features);
     }   
 }

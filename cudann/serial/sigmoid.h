@@ -21,6 +21,9 @@ class Sigmoid {
         // Initialize the Sigmoid Layer
         Sigmoid(const int n_features, const std::string name="Sigmoid");
 
+        // Destructor
+        ~Sigmoid();
+
         // Print layer name
         void show();
 

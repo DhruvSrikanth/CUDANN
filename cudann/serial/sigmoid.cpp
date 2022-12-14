@@ -10,9 +10,16 @@ Sigmoid::Sigmoid(const int n_features, const std::string name="Sigmoid") {
 
     // Initialize input, output, input gradient and output gradient
     this->n_features = n_features;
-    this->x = NULL;
-    this->fx = NULL;
-    this->dfx = NULL;
+    this->x = (double*) malloc(n_features * sizeof(double));
+    this->fx = (double*) malloc(n_features * sizeof(double));
+    this->dfx = (double*) malloc(n_features * sizeof(double));
+}
+
+// Destructor
+Sigmoid::~Sigmoid() {
+    free(this->x);
+    free(this->fx);
+    free(this->dfx);
 }
 
 // Print layer name
@@ -22,12 +29,11 @@ void Sigmoid::show() {
 
 // Forward call
 double* Sigmoid::forward(const double *input) {
-    const int size = sizeof(input) / sizeof(input[0]);
+    const size_t size = sizeof(input) / sizeof(input[0]);
 
-    this->x = new double[size];
-    this->fx = new double[size];
-    this->dfx = new double[size];
-
+    // Reallocate memory for input, output and input gradient
+    this->x = (double*) realloc(this->x, size * sizeof(double));
+    this->fx = (double*) realloc(this->fx, size * sizeof(double));
     memcpy(this->x, input, size * sizeof(double));
 
     // Compute sigmoid transformation
@@ -39,9 +45,10 @@ double* Sigmoid::forward(const double *input) {
 
 // Backward call
 double* Sigmoid::backward(const double *upstream_grad) {
-    const int size = sizeof(upstream_grad) / sizeof(upstream_grad[0]);
+    const size_t size = sizeof(upstream_grad) / sizeof(upstream_grad[0]);
 
     // Copy upstream gradient to dfx
+    this->dfx = (double*) realloc(this->dfx, size * sizeof(double));
     memcpy(this->dfx, upstream_grad, size * sizeof(double));
 
     // Compute sigmoid gradient
@@ -54,8 +61,8 @@ double* Sigmoid::backward(const double *upstream_grad) {
 // Sigmoid activation on batch - y(b, n_features) = 1 / (1 + e^-x) (b, n_features)
 void sigmoid_activation_batch(const double *x, double *fx, const int size, const int n_features) {
     // Perform sigmoid activation on each batch
-    const int batch_size = size / n_features;
-    for (int b = 0; b < batch_size; b++) {
+    const int n_batches = size / n_features;
+    for (int b = 0; b < n_batches; b++) {
         sigmoid_activation(b, x, fx, n_features);
     }
 }
@@ -71,7 +78,8 @@ void sigmoid_activation(const int b, const double *x, double *fx, const int n_fe
 // Sigmoid gradient on batch - y(b, n_features) = fx * (1 - fx) (b, n_features)
 void sigmoid_gradient_batch(const double *fx, double *dfx, const int size, const int n_features) {
     // Compute sigmoid gradient
-    for (int b = 0; b < size; b++) {
+    const int n_batches = size / n_features;
+    for (int b = 0; b < n_batches; b++) {
         sigmoid_gradient(b, fx, dfx, n_features);
     }
 }

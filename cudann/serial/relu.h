@@ -17,6 +17,9 @@ class ReLU {
         std::string name;
 
     ReLU(const int n_features, const std::string name="ReLU");
+    
+    // Destructor
+    ~ReLU();
 
     // Print layer information
     void show();
