@@ -1,10 +1,11 @@
 #include <iostream>
 #include <string.h>
+#include "layer.h"
 
 #ifndef ReLU_H
 #define ReLU_H
 
-class ReLU {
+class ReLU: public Layer {
     public:
         // Initialize the ReLU Layer
         int n_features;
@@ -14,7 +15,8 @@ class ReLU {
 
         // Layer name
         std::string name;
-
+    
+    // Initialize the ReLU Layer
     ReLU(const int n_features, const std::string name="ReLU");
     
     // Destructor

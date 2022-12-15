@@ -1,10 +1,11 @@
 #include <iostream>
 #include <string.h> 
+#include "layer.h"
 
 #ifndef Linear_H
 #define Linear_H
 
-class Linear {
+class Linear: public Layer {
     public:
         // Perceptron Layer size
         int in_features;

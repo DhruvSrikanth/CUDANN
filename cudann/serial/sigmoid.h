@@ -1,10 +1,11 @@
 #include <iostream>
-#include <string.h> 
+#include <string.h>
+#include "layer.h"
 
 #ifndef Sigmoid_H
 #define Sigmoid_H
 
-class Sigmoid {
+class Sigmoid: public Layer {
     public:
         // Layer name
         std::string name;

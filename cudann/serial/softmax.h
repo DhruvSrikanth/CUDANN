@@ -1,10 +1,11 @@
 #include <iostream>
-#include <string.h> 
+#include <string.h>
+#include "layer.h"
 
 #ifndef Softmax_H
 #define Softmax_H
 
-class Softmax {
+class Softmax: public Layer {
     public:
         // Layer name
         std::string name;
