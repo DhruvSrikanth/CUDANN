@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string.h> 
 
-#ifndef Sigmoid_H
-#define Sigmoid_H
+#ifndef Softmax_H
+#define Softmax_H
 
-class Sigmoid {
+class Softmax {
     public:
         // Layer name
         std::string name;
@@ -15,13 +15,13 @@ class Sigmoid {
         double *dfx;
 
         // Number of features
-        int n_features;
+        int n_classes;
 
-        // Initialize the Sigmoid Layer
-        Sigmoid(const int n_features, const std::string name="Sigmoid");
+        // Initialize the Softmax Layer
+        Softmax(const int n_classes, const std::string name="Softmax");
 
         // Destructor
-        ~Sigmoid();
+        ~Softmax();
 
         // Print layer name
         void show();

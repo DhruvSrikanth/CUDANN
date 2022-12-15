@@ -88,6 +88,6 @@ void sigmoid_gradient_batch(const double *fx, double *dfx, const int size, const
 void sigmoid_gradient(const int b, const double *fx, double *dfx, const int n_features) {
     // Compute sigmoid gradient
     for (int i = 0; i < n_features; i++) {
-        dfx[b * n_features + i] = fx[b * n_features + i] * (1 - fx[b * n_features + i]);
+        dfx[b * n_features + i] *= fx[b * n_features + i] * (1 - fx[b * n_features + i]);
     }
 }
