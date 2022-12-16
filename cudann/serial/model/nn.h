@@ -3,7 +3,7 @@
 #define NN_H
 
 #include <iostream>
-#include "layer.h"
+#include "../layers/layer.h"
 
 
 class NN {

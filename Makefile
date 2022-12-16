@@ -5,8 +5,8 @@ CC = g++-12
 CC_FLAGS = -O3 -target x86_64-apple-darwin
 
 # Compile
-compile: cudann/serial/test.cpp
-	$(CC) cudann/serial/test.cpp cudann/serial/initialize.cpp cudann/serial/linear.cpp -o cudann/serial/test
+compile: cudann/test/test.cpp
+	$(CC) cudann/test/test.cpp cudann/serial/utils/tensor.cpp -o cudann/test/test
 
 # Run
 run: main
@@ -15,4 +15,4 @@ run: main
 # Compile and test
 test:
 	make compile
-	cudann/serial/test
+	cudann/test/test
