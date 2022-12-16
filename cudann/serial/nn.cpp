@@ -1,6 +1,3 @@
-#include <iostream>
-#include <string.h>
-#include "layer.h"
 #include "nn.h"
 
 // Initialize the neural network

@@ -1,9 +1,13 @@
+#ifndef SIGMOID_H
+#define SIGMOID_H
+
 #include <iostream>
-#include <string.h>
 #include "layer.h"
 
-#ifndef Sigmoid_H
-#define Sigmoid_H
+void sigmoid_activation_batch(const double *x, double *fx, const int batch_size, const int n_features);
+void sigmoid_activation(const int b, const double *x, double *fx, const int n_features);
+void sigmoid_gradient_batch(const double *fx, double *dfx, const int batch_size, const int n_features);
+void sigmoid_gradient(const int b, const double *fx, double *dfx, const int n_features);
 
 class Sigmoid: public Layer {
     public:

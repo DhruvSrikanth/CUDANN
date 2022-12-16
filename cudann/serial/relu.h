@@ -1,9 +1,14 @@
+#ifndef RELU_H
+#define RELU_H
+
 #include <iostream>
-#include <string.h>
 #include "layer.h"
 
-#ifndef ReLU_H
-#define ReLU_H
+void relu_activation_batch(const double *x, double *fx, const int batch_size, const int n_features);
+void relu_activation(const int b, const double *x, double *fx, const int n_features);
+void relu_gradient_batch(const double *x, double *dfx, const int batch_size, const int n_features);
+void relu_gradient(const int b, const double *x, double *dfx, const int n_features);
+
 
 class ReLU: public Layer {
     public:

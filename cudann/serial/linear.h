@@ -1,11 +1,14 @@
-#include <iostream>
-#include <string.h> 
+#ifndef LINEAR_H
+#define LINEAR_H
+
 #include "layer.h"
 
-#ifndef Linear_H
-#define Linear_H
+void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag);
+void linear_transformation(const int b, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag);
+void linear_transformation_gradient_batch(const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int n_batches);
+void linear_transformation_gradient(const int b, const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int n_batches);
 
-class Linear: public Layer {
+class Linear{
     public:
         // Perceptron Layer size
         int in_features;
@@ -34,7 +37,7 @@ class Linear: public Layer {
         double *mean_db;
     
         // Initialize the Perceptron Layer
-        Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name);
+        Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name="Linear");
 
         // Destructor
         ~Linear();

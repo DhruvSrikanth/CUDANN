@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <iostream>
-#include <string.h>
 #include <random>
 #include "initialize.h"
 

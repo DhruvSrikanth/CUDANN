@@ -1,11 +1,8 @@
-#include <stdio.h>
-#include <iostream>
-#include <string.h>
 #include "relu.h"
-
+#include <cstring>
 
 // Initialize the ReLU Layer
-ReLU::ReLU(const int n_features, const std::string name="Sigmoid") {
+ReLU::ReLU(const int n_features, const std::string name) {
     // Set the number of features
     this->n_features = n_features;
 

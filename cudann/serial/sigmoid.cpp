@@ -1,10 +1,9 @@
-#include <iostream>
-#include <string.h> 
-#include <cmath>
 #include "sigmoid.h"
+#include <cmath>
+#include <cstring>
 
 // Initialize the Sigmoid Layer
-Sigmoid::Sigmoid(const int n_features, const std::string name="Sigmoid") {
+Sigmoid::Sigmoid(const int n_features, const std::string name) {
     // Set layer name
     this->name = name;
 

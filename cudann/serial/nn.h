@@ -1,9 +1,9 @@
-#include <iostream>
-#include <string.h>
-#include "layer.h"
 
 #ifndef NN_H
 #define NN_H
+
+#include <iostream>
+#include "layer.h"
 
 
 class NN {
@@ -43,4 +43,4 @@ class NN {
 };
 
 
-#endif NN_H
+#endif

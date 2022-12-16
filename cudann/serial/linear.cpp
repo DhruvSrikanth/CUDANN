@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <iostream>
-#include <string.h> 
-#include <math.h>
 #include "initialize.h"
 #include "linear.h"
-
+#include <cstring>
 
 // Initialize the Perceptron Layer
-Linear::Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name="Linear") {
+Linear::Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name) {
     // Set layer size
     this->in_features = in_features;
     this->out_features = out_features;
@@ -62,12 +58,14 @@ Linear::~Linear() {
 
 // Print layer information
 void Linear::show() {
-    std::printf("%s: [%d -> %d]\n", this->name, this->in_features, this->out_features);
+    std::printf("%s: [%d -> %d]\n", this->name.c_str(), this->in_features, this->out_features);
 }
 
 // Forward call
 double* Linear::forward(const double *input) {
+    // Size of the input
     const int n_batches = (sizeof(input) / sizeof(input[0])) / this->in_features;
+
     // Reallocate batch size memory to x and Copy input to x
     this->x = (double*) realloc(this->x, this->in_features * n_batches * sizeof(double));
     memcpy(this->x, input, this->in_features * n_batches * sizeof(double));

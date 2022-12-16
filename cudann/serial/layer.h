@@ -1,15 +1,14 @@
-#include <iostream>
-#include <string.h> 
-
-#ifndef Layer_H
-#define Layer_H
+#ifndef LAYER_H
+#define LAYER_H
 
 class Layer {
     public:
-        void show();
-        double* forward(const double *input);
-        double* backward(const double *upstream_grad);
-        void update_params(const double learning_rate);
+        Layer();
+        ~Layer();
+        virtual void show();
+        virtual double* forward(const double *input);
+        virtual double* backward(const double *upstream_grad);
+        virtual void update_params(const double learning_rate);
 };
 
 #endif

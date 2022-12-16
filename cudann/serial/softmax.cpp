@@ -1,10 +1,9 @@
-#include <iostream>
-#include <string.h> 
-#include <cmath>
 #include "softmax.h"
+#include <cmath>
+#include <cstring>
 
 // Initialize the SigmSoftmaxoid Layer
-Softmax::Softmax(const int n_classes, const std::string name="Softmax") {
+Softmax::Softmax(const int n_classes, const std::string name) {
     // Set layer name
     this->name = name;
 
@@ -85,12 +84,12 @@ void softmax_gradient_batch(const double* upstream_grad, const double *fx, doubl
     // Compute softmax gradient
     const int n_batches = size / n_classes;
     for (int b = 0; b < n_batches; b++) {
-        sigmoid_gradient(b, upstream_grad, fx, dfx, n_classes);
+        softmax_gradient(b, upstream_grad, fx, dfx, n_classes);
     }
 }
 
 // Softmax gradient - y = fx * (upstream_grad - fx * upstream_grad)
-void sigmoid_gradient(const int b, const double* upstream_grad, const double *fx, double *dfx, const int n_classes) {
+void softmax_gradient(const int b, const double* upstream_grad, const double *fx, double *dfx, const int n_classes) {
     // Compute softmax gradient
     for (int i = 0; i < n_classes; i++) {
         dfx[b * n_classes + i] *= (upstream_grad[b * n_classes + i] - (upstream_grad[b * n_classes + i] * fx[b * n_classes + i]));
