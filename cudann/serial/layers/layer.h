@@ -1,14 +1,12 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+#include "../utils/tensor.h"
 class Layer {
     public:
-        Layer();
-        ~Layer();
-        virtual void show();
-        virtual double* forward(const double *input);
-        virtual double* backward(const double *upstream_grad);
-        virtual void update_params(const double learning_rate);
+        void show();
+        Tensor* forward(const Tensor *input);
+        Tensor* backward(const Tensor *upstream_grad);
 };
 
 #endif

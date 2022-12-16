@@ -11,13 +11,13 @@ void relu_gradient_batch(const double *x, double *dfx, const int batch_size, con
 void relu_gradient(const int b, const double *x, double *dfx, const int n_features);
 
 
-class ReLU {
+class ReLU: public Layer {
     public:
         // Initialize the ReLU Layer
         int n_features;
-        tensor *x;
-        tensor *fx;
-        tensor *dfx;
+        Tensor *x;
+        Tensor *fx;
+        Tensor *dfx;
 
         // Layer name
         std::string name;
@@ -32,10 +32,10 @@ class ReLU {
         void show();
 
         // Forward call
-        tensor* forward(const tensor *input);
+        Tensor* forward(const Tensor *input);
 
         // Backward call
-        tensor* backward(const tensor *upstream_grad);
+        Tensor* backward(const Tensor *upstream_grad);
 };
 
 #endif

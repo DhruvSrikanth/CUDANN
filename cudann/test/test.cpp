@@ -6,6 +6,7 @@
 #include <time.h> 
 
 #include "../serial/utils/tensor.h"
+#include "../serial/layers/relu.h"
 
 int main(int argc, char *argv[]) {
     // Add layers
@@ -15,20 +16,17 @@ int main(int argc, char *argv[]) {
     double learning_rate = 0.01;
 
     // ReLU layer
-    // ReLU relu(n_features, "relu");
-    // relu.show();
+    ReLU relu(n_features, "relu");
 
-    // // Random input tensor
+    // Random input tensor
     double *input = (double *) malloc(n_batches * n_features * sizeof(double));
-    srand(time(0));
-    for(int i = 0; i < n_batches * n_features; i++){
-        input[i] = (rand() % 100) - 50;
+    for (int i = 0; i < n_batches * n_features; i++) {
+        input[i] = i - (n_batches * n_features / 2);
     }
     Tensor input_tensor(n_batches, n_features, input);
-    input_tensor.show();
 
-    // // // Forward pass
-    // tensor *output = relu.forward(&input_tensor);
+    // Forward pass
+    Tensor *output = relu.forward(&input_tensor);
 
     // Print output as a matrix
     // for(int b = 0; b < n_batches; b++){
@@ -37,9 +35,25 @@ int main(int argc, char *argv[]) {
     //     }
     //     std::cout << std::endl;
     // }
+    
 
-    // Free memory
-    // free(input);
+    // Backward pass
+    double *upstream_grad = (double *) malloc(n_batches * n_features * sizeof(double));
+    for (int i = 0; i < n_batches * n_features; i++) {
+        upstream_grad[i] = i - (n_batches * n_features / 2);
+    }
+    Tensor upstream_grad_tensor(n_batches, n_features, upstream_grad);
+    Tensor *input_grad = relu.backward(&upstream_grad_tensor);
+
+    // Print output as a matrix
+    // for(int b = 0; b < n_batches; b++){
+    //     for(int i = 0; i < n_features; i++){
+    //         std::cout << input_grad->data[b * n_features + i] << ",";
+    //     }
+    //     std::cout << std::endl;
+    // }
+
+
 
 
 
