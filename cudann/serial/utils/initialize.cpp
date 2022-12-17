@@ -23,7 +23,7 @@ void random_initialization(double *weights, const int in_features, const int out
     std::normal_distribution<> d(0, 1);
     for (int i = 0; i < in_features; i++) {
         for (int j = 0; j < out_features; j++) {
-            weights[i * out_features + j] = d(gen) * sqrt(2 / in_features);
+            weights[i * out_features + j] = d(gen) * sqrt(2.0 / in_features);
         }
     }
 }
@@ -34,7 +34,7 @@ void uniform_initialization(double *weights, const int in_features, const int ou
     std::uniform_real_distribution<> d(-1, 1);
     for (int i = 0; i < in_features; i++) {
         for (int j = 0; j < out_features; j++) {
-            weights[i * out_features + j] = d(gen) * sqrt(2 / in_features);
+            weights[i * out_features + j] = d(gen) * sqrt(2.0 / in_features);
         }
     }
 }
@@ -42,5 +42,11 @@ void uniform_initialization(double *weights, const int in_features, const int ou
 void initialize_zeros(double *x, const int size) {
     for (int i = 0; i < size; i++) {
         x[i] = 0.0;
+    }
+}
+
+void initialize_ones(double *x, const int size) {
+    for (int i = 0; i < size; i++) {
+        x[i] = 1.0;
     }
 }

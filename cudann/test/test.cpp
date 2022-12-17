@@ -11,10 +11,10 @@
 
 int main(int argc, char *argv[]) {
     // Add layers
-    int n_classes = 10;
-    int n_features = 28*28;
-    int n_batches = 2;
-    double learning_rate = 0.01;
+    const int n_classes = 10;
+    const int n_features = 28*28;
+    const int n_batches = 2;
+    const double learning_rate = 0.01;
 
     // Softmax layer
     Linear linear(n_features, n_classes, true, "random", "Linear");
@@ -25,13 +25,13 @@ int main(int argc, char *argv[]) {
     initialize_weights(input, n_batches, n_features, "random");
     Tensor input_tensor(n_batches, n_features, input);
 
-    // Forward pass
+    // // Forward pass
     Tensor *output = linear.forward(&input_tensor);
 
     // Print output as a matrix
     // for(int b = 0; b < n_batches; b++){
     //     for(int i = 0; i < n_classes; i++){
-    //         std::cout << output->data[b * n_classes + i] << ",";
+    //         std::printf("%f,", output->data[b * n_classes + i]);
     //     }
     //     std::cout << std::endl;
     // }
@@ -45,12 +45,12 @@ int main(int argc, char *argv[]) {
     Tensor *input_grad = linear.backward(&upstream_grad_tensor);
 
     // Print output as a matrix
-    // for(int b = 0; b < n_batches; b++){
-    //     for(int i = 0; i < n_features; i++){
-    //         std::cout << input_grad->data[b * n_features + i] << ",";
-    //     }
-    //     std::cout << std::endl;
-    // }
+    for(int b = 0; b < n_batches; b++){
+        for(int i = 0; i < n_features; i++){
+            std::cout << input_grad->data[b * n_features + i] << ",";
+        }
+        std::cout << std::endl;
+    }
 
 
 

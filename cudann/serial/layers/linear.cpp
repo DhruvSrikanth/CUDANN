@@ -2,6 +2,7 @@
 #include "../utils/tensor.h"
 #include "../utils/initialize.h"
 #include <cstring>
+#include <random>
 
 // Initialize the Perceptron Layer
 Linear::Linear(const int in_features, const int out_features, const bool bias, const std::string initialization, const std::string name) {
@@ -15,12 +16,6 @@ Linear::Linear(const int in_features, const int out_features, const bool bias, c
     // Output neurons are columns and input neurons are rows, therefore weight matrix is of shape (in_features, out_features)
     this->weight = (double*) malloc(this->in_features * this->out_features * sizeof(double));
     initialize_weights(this->weight, this->in_features, this->out_features, this->initialization);
-    // Print array
-    // for (int i = 0; i < in_features; i++) {
-    //     for (int j = 0; j < out_features; j++) {
-    //         std::printf("%f ", this->weight[i * out_features + j]);
-    //     }
-    // }
 
     // Set bias flag and initialize bias
     this->bias_flag = bias;
@@ -88,7 +83,7 @@ Tensor* Linear::forward(const Tensor *input) {
     create_tensor(this->fx, input->n_batches, this->out_features);
 
     // Compute linear transformation on the batch
-    linear_transformation_batch(this->out_features, this->in_features, this->weight, this->x->data, this->bias, this->fx->data, this->bias_flag);
+    linear_transformation_batch(this->out_features, this->in_features, this->weight, this->x->data, this->bias, this->fx->data, this->bias_flag, input->n_batches);
 
     // Return output
     return this->fx;
@@ -158,9 +153,7 @@ void Linear::update_params(const double lr) {
 }
 
 // Linear transformation on a batch - fx(b, out) = W(in x out) x x(b, out) + bias (b, out)
-void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag) {
-    const int n_batches = (sizeof(x) / sizeof(x[0])) / in_features;
-    
+void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag, const int n_batches) {
     // Compute linear transformation on the batch
     for (int b = 0; b < n_batches; b++) {
         // Compute linear transformation for each example

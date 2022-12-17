@@ -4,3 +4,4 @@ void initialize_weights(double *weights, const int in_features, const int out_fe
 void random_initialization(double *weights, const int in_features, const int out_features);
 void uniform_initialization(double *weights, const int in_features, const int out_features);
 void initialize_zeros(double *x, const int size);
+void initialize_ones(double *x, const int size);

@@ -5,7 +5,7 @@
 #include "../utils/tensor.h"
 #include <string>
 
-void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag);
+void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag, const int n_batches);
 void linear_transformation(const int b, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag);
 void linear_transformation_gradient_batch(const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int n_batches);
 void linear_transformation_gradient(const int b, const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int n_batches);
@@ -33,6 +33,7 @@ class Linear: public Layer {
         Tensor *x;
         Tensor *fx;
         Tensor *dfx;
+        
         double *dW;
         double *db;
         double *mean_dW;
