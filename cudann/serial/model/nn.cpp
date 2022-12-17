@@ -16,13 +16,13 @@ NN::~NN() {
 
 // Print summary of the network
 void NN::summary() {
-    std::printf("Model: %s\n", this->name.c_str());
-    std::printf("Layers: \n");
+    std::printf("=========================\n");
+    std::printf("Model - %s\n", this->name.c_str());
+    std::printf("=========================\n");
     for (int i = 0; i < this->n_layers; i++) {
-        std::printf("Layer %d: ", i);
         this->layers[i]->show();
     }
-    std::printf("\n");
+    std::printf("==========================\n");
 }
 
 // Add layer

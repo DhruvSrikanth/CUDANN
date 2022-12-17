@@ -1,12 +1,14 @@
 # Compiler
 CC = g++-12
+CPP_FILES := $(wildcard cudann/*/*/*.cpp)
+
 
 # Compiler flags
 CC_FLAGS = -O3 -target x86_64-apple-darwin
 
 # Compile
 compile: cudann/test/test.cpp
-	$(CC) cudann/test/test.cpp cudann/serial/utils/tensor.cpp cudann/serial/layers/linear.cpp cudann/serial/utils/initialize.cpp -o cudann/test/test
+	$(CC) -o cudann/test/test cudann/test/test.cpp $(CPP_FILES)
 
 clean:
 	rm cudann/test/test
@@ -20,4 +22,3 @@ test:
 	make compile
 	cudann/test/test
 	make clean
-

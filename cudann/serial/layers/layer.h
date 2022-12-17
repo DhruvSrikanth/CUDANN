@@ -2,13 +2,15 @@
 #define LAYER_H
 
 #include "../utils/tensor.h"
+#include <string>
+
 class Layer {
     public:
         std::string type;
-        void show();
-        Tensor* forward(const Tensor *input);
-        Tensor* backward(const Tensor *upstream_grad);
-        void update_params(const double learning_rate);
+        virtual void show();
+        virtual Tensor* forward(const Tensor *input);
+        virtual Tensor* backward(const Tensor *upstream_grad);
+        virtual void update_params(const double learning_rate);
 };
 
 #endif

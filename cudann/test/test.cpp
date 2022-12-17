@@ -6,7 +6,6 @@
 #include <time.h> 
 
 #include "../serial/utils/tensor.h"
-#include "../serial/utils/initialize.h"
 #include "../serial/layers/linear.h"
 #include "../serial/layers/softmax.h"
 #include "../serial/layers/relu.h"
@@ -33,7 +32,7 @@ int main(int argc, char *argv[]) {
 
     // Print model summary
     model.summary();
-    
+
     return 0;
 }
 

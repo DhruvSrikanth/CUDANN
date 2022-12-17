@@ -1,9 +1,9 @@
 #ifndef SIGMOID_H
 #define SIGMOID_H
 
-#include <iostream>
 #include "layer.h"
 #include "../utils/tensor.h"
+#include <iostream>
 
 void sigmoid_activation_batch(const double *x, double *fx, const int batch_size, const int n_features);
 void sigmoid_activation(const int b, const double *x, double *fx, const int n_features);

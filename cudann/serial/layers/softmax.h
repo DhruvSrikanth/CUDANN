@@ -1,8 +1,8 @@
 #ifndef SOFTMAX_H
 #define SOFTMAX_H
 
-#include <iostream>
 #include "layer.h"
+#include <iostream>
 
 void softmax_activation_batch(const double *x, double *fx, const int batch_size, const int n_features);
 void softmax_activation(const int b, const double *x, double *fx, const int n_features);
