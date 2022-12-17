@@ -1,4 +1,5 @@
 #include "softmax.h"
+#include "../utils/tensor.h"
 #include <cmath>
 #include <cstring>
 
@@ -7,52 +8,66 @@ Softmax::Softmax(const int n_classes, const std::string name) {
     // Set layer name
     this->name = name;
 
-    // Initialize input, output, input gradient and output gradient
+    // Set the number of classes
     this->n_classes = n_classes;
-    this->x = (double*) malloc(n_classes * sizeof(double));
-    this->fx = (double*) malloc(n_classes * sizeof(double));
-    this->dfx = (double*) malloc(n_classes * sizeof(double));
+    
+    // Initialize input, output, input gradient and output gradient
+    this->x = NULL;
+    this->fx = NULL;
+    this->dfx = NULL;
 }
 
 // Destructor
 Softmax::~Softmax() {
-    free(this->x);
-    free(this->fx);
-    free(this->dfx);
+    // Free memory
+    free_tensor(this->x);
+    free_tensor(this->fx);
+    free_tensor(this->dfx);
 }
 
 // Print layer name
 void Softmax::show() {
-    std::printf("%s: [%d]\n", this->name, this->n_classes);
+    std::printf("%s: [%d]\n", this->name.c_str(), this->n_classes);
 }
 
 // Forward call
-double* Softmax::forward(const double *input) {
-    const size_t size = sizeof(input) / sizeof(input[0]);
+Tensor* Softmax::forward(const Tensor *input) {
+    const int size = input->n_batches * this->n_classes;
 
-    // Reallocate memory for input, output and input gradient
-    this->x = (double*) realloc(this->x, size * sizeof(double));
-    this->fx = (double*) realloc(this->fx, size * sizeof(double));
-    memcpy(this->x, input, size * sizeof(double));
+    // Allocate memory for input, output and input gradient
+    if (this->x != NULL) {
+        free_tensor(this->x);
+    }
+    this->x = (Tensor*) malloc(sizeof(Tensor));
+    // Copy input to x
+    copy_tensor(this->x, (Tensor*) input);
+
+    if (this->fx != NULL) {
+        free_tensor(this->fx);
+    }
+    this->fx = (Tensor*) malloc(sizeof(Tensor));
+    create_tensor(this->fx, input->n_batches, this->n_classes);
 
     // Compute softmax transformation
-    softmax_activation_batch(this->x, this->fx, size, this->n_classes);
-
+    softmax_activation_batch(this->x->data, this->fx->data, size, this->n_classes);
+    
     // Return output
     return this->fx;
 }
 
 // Backward call
-double* Softmax::backward(const double *upstream_grad) {
-    const size_t size = sizeof(fx) / sizeof(fx[0]);
+Tensor* Softmax::backward(const Tensor *upstream_grad) {
+    const int size = upstream_grad->n_batches * this->n_classes;
 
     // Copy upstream gradient to dfx
-    this->dfx = (double*) realloc(this->dfx, size * sizeof(double));
-    memcpy(this->dfx, this->fx, size * sizeof(double));
+    if (this->dfx != NULL) {
+        free_tensor(this->dfx);
+    }
+    this->dfx = (Tensor*) malloc(sizeof(Tensor));
+    copy_tensor(this->dfx, (Tensor*) this->fx);
 
     // Compute softmax gradient
-    softmax_gradient_batch(upstream_grad, this->fx, this->dfx, size, this->n_classes);
-
+    softmax_gradient_batch(upstream_grad->data, this->fx->data, this->dfx->data, size, this->n_classes);
     // Return output
     return this->dfx;
 }

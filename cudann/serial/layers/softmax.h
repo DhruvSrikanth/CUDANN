@@ -15,9 +15,9 @@ class Softmax: public Layer {
         std::string name;
 
         // Input, output, input gradient, output gradient
-        double *x;
-        double *fx;
-        double *dfx;
+        Tensor *x;
+        Tensor *fx;
+        Tensor *dfx;
 
         // Number of features
         int n_classes;
@@ -32,10 +32,10 @@ class Softmax: public Layer {
         void show();
 
         // Forward call
-        double* forward(const double *input);
+        Tensor* forward(const Tensor *input);
 
         // Backward call
-        double* backward(const double *upstream_grad);
+        Tensor* backward(const Tensor *upstream_grad);
 };
 
 #endif
