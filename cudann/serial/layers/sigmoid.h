@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "layer.h"
+#include "../utils/tensor.h"
 
 void sigmoid_activation_batch(const double *x, double *fx, const int batch_size, const int n_features);
 void sigmoid_activation(const int b, const double *x, double *fx, const int n_features);
@@ -15,9 +16,9 @@ class Sigmoid: public Layer {
         std::string name;
 
         // Input, output, input gradient, output gradient
-        double *x;
-        double *fx;
-        double *dfx;
+        Tensor *x;
+        Tensor *fx;
+        Tensor *dfx;
 
         // Number of features
         int n_features;
@@ -32,10 +33,10 @@ class Sigmoid: public Layer {
         void show();
 
         // Forward call
-        double* forward(const double *input);
+        Tensor* forward(const Tensor *input);
 
         // Backward call
-        double* backward(const double *upstream_grad);
+        Tensor* backward(const Tensor *upstream_grad);
 };
 
 #endif

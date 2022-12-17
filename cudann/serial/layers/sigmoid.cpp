@@ -7,51 +7,65 @@ Sigmoid::Sigmoid(const int n_features, const std::string name) {
     // Set layer name
     this->name = name;
 
-    // Initialize input, output, input gradient and output gradient
     this->n_features = n_features;
-    this->x = (double*) malloc(n_features * sizeof(double));
-    this->fx = (double*) malloc(n_features * sizeof(double));
-    this->dfx = (double*) malloc(n_features * sizeof(double));
+    
+    // Initialize input, output, input gradient and output gradient
+    this->x = NULL;
+    this->fx = NULL;
+    this->dfx = NULL;
 }
 
 // Destructor
 Sigmoid::~Sigmoid() {
-    free(this->x);
-    free(this->fx);
-    free(this->dfx);
+    // Free memory
+    free_tensor(this->x);
+    free_tensor(this->fx);
+    free_tensor(this->dfx);
 }
 
 // Print layer name
 void Sigmoid::show() {
-    std::printf("%s: [%d]\n", this->name, this->n_features);
+    std::printf("%s: [%d]\n", this->name.c_str(), this->n_features);
 }
 
 // Forward call
-double* Sigmoid::forward(const double *input) {
-    const size_t size = sizeof(input) / sizeof(input[0]);
+Tensor* Sigmoid::forward(const Tensor *input) {
+    const int size = input->n_batches * this->n_features;
 
     // Reallocate memory for input, output and input gradient
-    this->x = (double*) realloc(this->x, size * sizeof(double));
-    this->fx = (double*) realloc(this->fx, size * sizeof(double));
-    memcpy(this->x, input, size * sizeof(double));
+    if (this->x != NULL) {
+        free_tensor(this->x);
+    }
+    this->x = (Tensor*) malloc(sizeof(Tensor));
+    // Copy input to x
+    copy_tensor(this->x, (Tensor*) input);
+
+    if (this->fx != NULL) {
+        free_tensor(this->fx);
+    }
+    this->fx = (Tensor*) malloc(sizeof(Tensor));
+    create_tensor(this->fx, input->n_batches, this->n_features);
 
     // Compute sigmoid transformation
-    sigmoid_activation_batch(this->x, this->fx, size, this->n_features);
+    sigmoid_activation_batch(this->x->data, this->fx->data, size, this->n_features);
 
     // Return output
     return this->fx;
 }
 
 // Backward call
-double* Sigmoid::backward(const double *upstream_grad) {
-    const size_t size = sizeof(upstream_grad) / sizeof(upstream_grad[0]);
+Tensor* Sigmoid::backward(const Tensor *upstream_grad) {
+    const int size = upstream_grad->n_batches * this->n_features;
 
     // Copy upstream gradient to dfx
-    this->dfx = (double*) realloc(this->dfx, size * sizeof(double));
-    memcpy(this->dfx, upstream_grad, size * sizeof(double));
+    if (this->dfx != NULL) {
+        free_tensor(this->dfx);
+    }
+    this->dfx = (Tensor*) malloc(sizeof(Tensor));
+    copy_tensor(this->dfx, (Tensor*) upstream_grad);
 
     // Compute sigmoid gradient
-    sigmoid_gradient_batch(this->fx, this->dfx, size, this->n_features);
+    sigmoid_gradient_batch(this->fx->data, this->dfx->data, size, this->n_features);
 
     // Return output
     return this->dfx;

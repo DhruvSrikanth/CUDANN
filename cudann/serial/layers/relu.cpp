@@ -11,10 +11,6 @@ ReLU::ReLU(const int n_features, const std::string name) {
     this->name = name;
 
     // Initialize input, output, input gradient and output gradient
-    double *data = (double*) malloc(1 * n_features * sizeof(double));
-    Tensor tensor(1, n_features, data);
-
-    // Initialize array for cache locality (i.e. contiguous memory) and cached access since same and similar locations frequently
     this->x = NULL;
     this->fx = NULL;
     this->dfx = NULL;
@@ -43,16 +39,18 @@ Tensor* ReLU::forward(const Tensor *input) {
     // Allocate memory for input, output and input gradient
     if (this->x != NULL) {
         free_tensor(this->x);
-        free_tensor(this->fx);
 
     }
     this->x = (Tensor*) malloc(sizeof(Tensor));
-    this->fx = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->x, input->n_batches, this->n_features);
-    create_tensor(this->fx, input->n_batches, this->n_features);
-
     // Copy input to x
     copy_tensor(this->x, (Tensor*) input);
+    
+    if (this->fx != NULL) {
+        free_tensor(this->fx);
+    }
+    this->fx = (Tensor*) malloc(sizeof(Tensor));
+    create_tensor(this->fx, input->n_batches, this->n_features);
+
 
     // Compute relu activation
     relu_activation_batch(this->x->data, this->fx->data, size, this->n_features);

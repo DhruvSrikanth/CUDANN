@@ -6,7 +6,7 @@
 #include <time.h> 
 
 #include "../serial/utils/tensor.h"
-#include "../serial/layers/relu.h"
+#include "../serial/layers/sigmoid.h"
 
 int main(int argc, char *argv[]) {
     // Add layers
@@ -15,8 +15,9 @@ int main(int argc, char *argv[]) {
     int n_batches = 2;
     double learning_rate = 0.01;
 
-    // ReLU layer
-    ReLU relu(n_features, "relu");
+    // Sigmoid layer
+    Sigmoid sigmoid(n_features, "Sigmoid");
+    sigmoid.show();
 
     // Random input tensor
     double *input = (double *) malloc(n_batches * n_features * sizeof(double));
@@ -26,7 +27,7 @@ int main(int argc, char *argv[]) {
     Tensor input_tensor(n_batches, n_features, input);
 
     // Forward pass
-    Tensor *output = relu.forward(&input_tensor);
+    Tensor *output = sigmoid.forward(&input_tensor);
 
     // Print output as a matrix
     // for(int b = 0; b < n_batches; b++){
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]) {
         }
     }
     Tensor upstream_grad_tensor(n_batches, n_features, upstream_grad);
-    Tensor *input_grad = relu.backward(&upstream_grad_tensor);
+    Tensor *input_grad = sigmoid.backward(&upstream_grad_tensor);
 
     // Print output as a matrix
     for(int b = 0; b < n_batches; b++){

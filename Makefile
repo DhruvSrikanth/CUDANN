@@ -6,7 +6,7 @@ CC_FLAGS = -O3 -target x86_64-apple-darwin
 
 # Compile
 compile: cudann/test/test.cpp
-	$(CC) cudann/test/test.cpp cudann/serial/utils/tensor.cpp cudann/serial/layers/relu.cpp -o cudann/test/test
+	$(CC) cudann/test/test.cpp cudann/serial/utils/tensor.cpp cudann/serial/layers/sigmoid.cpp -o cudann/test/test
 
 clean:
 	rm cudann/test/test
