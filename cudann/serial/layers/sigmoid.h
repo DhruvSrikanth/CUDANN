@@ -12,6 +12,9 @@ void sigmoid_gradient(const int b, const double *fx, double *dfx, const int n_fe
 
 class Sigmoid: public Layer {
     public:
+        // Layer type
+        std::string type = "Sigmoid";
+        
         // Layer name
         std::string name;
 

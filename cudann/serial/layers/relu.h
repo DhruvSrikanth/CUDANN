@@ -13,6 +13,9 @@ void relu_gradient(const int b, const double *x, double *dfx, const int n_featur
 
 class ReLU: public Layer {
     public:
+        // Layer type
+        std::string type = "ReLU";
+        
         // Initialize the ReLU Layer
         int n_features;
         Tensor *x;

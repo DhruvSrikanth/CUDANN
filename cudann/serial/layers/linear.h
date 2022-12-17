@@ -12,6 +12,9 @@ void linear_transformation_gradient(const int b, const double *upstream_grad, co
 
 class Linear: public Layer {
     public:
+        // Layer type
+        std::string type = "Linear";
+
         // Perceptron Layer size
         int in_features;
         int out_features;

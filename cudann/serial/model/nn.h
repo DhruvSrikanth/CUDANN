@@ -1,4 +1,3 @@
-
 #ifndef NN_H
 #define NN_H
 
@@ -29,14 +28,14 @@ class NN {
         // Print the network
         void summary();
 
-        // Forward call
-        double* forward(const double *input);
-
         // Add layer
         void add_layer(const Layer *layer, const std::string layer_type);
 
+        // Forward call
+        Tensor* forward(const Tensor *input);
+
         // Backward call
-        double* backward(const double *upstream_grad);
+        Tensor* backward(const Tensor *upstream_grad);
 
         // Update weights
         void update_weights(const double learning_rate);

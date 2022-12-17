@@ -11,6 +11,9 @@ void softmax_gradient(const int b, const double* upstream_grad, const double *fx
 
 class Softmax: public Layer {
     public:
+        // Layer type
+        std::string type = "Softmax";
+        
         // Layer name
         std::string name;
 
