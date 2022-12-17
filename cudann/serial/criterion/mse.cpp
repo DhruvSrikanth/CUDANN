@@ -20,7 +20,7 @@ MSE::~MSE() {
 }
 
 // Compute mse
-Tensor *MSE::forward(Tensor *input, Tensor *target) {
+Tensor *MSE::forward(const Tensor *input, const Tensor *target) {
     const int size = input->n_batches * input->n_features;
     
     // Allocate memory for input and gradient

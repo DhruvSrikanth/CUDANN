@@ -53,9 +53,15 @@ Linear::~Linear() {
         free(this->db);
         free(this->mean_db);
     }
-    free_tensor(this->x);
-    free_tensor(this->fx);
-    free_tensor(this->dfx);
+    if (this->x != NULL) {
+        free_tensor(this->x);
+    }
+    if (this->fx != NULL) {
+        free_tensor(this->fx);
+    }
+    if (this->dfx != NULL) {
+        free_tensor(this->dfx);
+    }
 }
 
 // Print layer information
@@ -73,7 +79,7 @@ Tensor* Linear::forward(const Tensor *input) {
         free_tensor(this->x);
     }
     this->x = (Tensor*) malloc(sizeof(Tensor));
-    copy_tensor(this->x, (Tensor*) input);
+    copy_tensor(this->x, input);
 
     // Allocate memory for output
     if (this->fx != NULL) {

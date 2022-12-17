@@ -29,7 +29,7 @@ CrossEntropy::~CrossEntropy() {
 }
 
 // Compute cross entropy
-Tensor *CrossEntropy::forward(Tensor *input, Tensor *target) {
+Tensor *CrossEntropy::forward(const Tensor *input, const Tensor *target) {
     const int size = input->n_batches * input->n_features;
 
     // Allocate memory for input, target, output and gradient and copy input and target
@@ -46,7 +46,9 @@ Tensor *CrossEntropy::forward(Tensor *input, Tensor *target) {
     copy_tensor(this->target, target);
 
     // Clip target
-    this->target->clip(1e-8, NULL);
+    const double min = 1e-8;
+    const double *max = nullptr;
+    this->target->clip(&min, max);
 
     if (this->fx != NULL) {
         free(this->fx);
@@ -65,6 +67,8 @@ Tensor *CrossEntropy::forward(Tensor *input, Tensor *target) {
 
     // Compute cross entropy gradient
     ce_grad_batch(input->data, target->data, this->grad->data, input->n_features, input->n_batches);
+
+    return this->fx;
 }
 
 // Compute cross entropy gradient

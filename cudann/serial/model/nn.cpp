@@ -36,7 +36,7 @@ void NN::add_layer(const Layer *layer) {
 // Forward call
 Tensor* NN::forward(const Tensor *input) {
     Tensor *output = (Tensor*) malloc(sizeof(Tensor));
-    copy_tensor(output, (Tensor*) input);
+    copy_tensor(output, input);
 
     for (int i = 0; i < this->n_layers; i++) {
         output = this->layers[i]->forward(output);
@@ -47,7 +47,7 @@ Tensor* NN::forward(const Tensor *input) {
 // Backward call
 Tensor* NN::backward(const Tensor *upstream_grad) {
     Tensor *downstream_grad = (Tensor*) malloc(sizeof(Tensor));
-    copy_tensor(downstream_grad, (Tensor*) upstream_grad);
+    copy_tensor(downstream_grad, upstream_grad);
 
     for (int i = this->n_layers - 1; i >= 0; i--) {
         downstream_grad = this->layers[i]->backward(downstream_grad);

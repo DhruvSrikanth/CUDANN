@@ -28,7 +28,7 @@ void free_tensor(Tensor *tensor) {
 }
 
 // Copy tensor
-void copy_tensor(Tensor *dst, Tensor *src) {
+void copy_tensor(Tensor *dst, const Tensor *src) {
     dst->n_batches = src->n_batches;
     dst->n_features = src->n_features;
     dst->data = (double *) malloc(src->n_batches * src->n_features * sizeof(double));
@@ -51,17 +51,17 @@ void create_tensor(Tensor *tensor, const int n_batches, const int n_features) {
 }
 
 // Clip tensor
-void Tensor::clip(const double min, const double max) {
+void Tensor::clip(const double* min, const double* max) {
     for (int b = 0; b < this->n_batches; b++) {
         for (int f = 0; f < this->n_features; f++) {
-            if (min != NULL) {
-                if (this->data[b * this->n_features + f] < min) {
-                    this->data[b * this->n_features + f] = min;
+            if (min != nullptr) {
+                if (this->data[b * this->n_features + f] < *min) {
+                    this->data[b * this->n_features + f] = *min;
                 }
             }
-            if (max != NULL) {
-                if (this->data[b * this->n_features + f] > max) {
-                    this->data[b * this->n_features + f] = max;
+            if (max != nullptr) {
+                if (this->data[b * this->n_features + f] > *max) {
+                    this->data[b * this->n_features + f] = *max;
                 }
             }
         }

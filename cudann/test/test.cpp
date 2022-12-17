@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     const int n_batches = 2;
     const double learning_rate = 0.01;
 
-    // // Add layers
+    // Add layers
     // Linear linear1(n_features, 128, true, "random", "linear1");
     // ReLU relu1(128, "relu1");
     // Linear linear2(128, n_classes, true, "random", "linear2");
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     // Compute loss
     Tensor *loss = mse.forward(&input, &target);
-    // loss->print();
+    loss->print();
     // Average loss
     double avg_loss = 0.0;
     for (int i = 0; i < n_batches; i++) {
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
     // Compute gradient
     Tensor *grad = mse.backward();
-    // grad->print();
+    grad->print();
 
 
     return 0;

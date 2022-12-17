@@ -20,9 +20,15 @@ Softmax::Softmax(const int n_classes, const std::string name) {
 // Destructor
 Softmax::~Softmax() {
     // Free memory
-    free_tensor(this->x);
-    free_tensor(this->fx);
-    free_tensor(this->dfx);
+    if (this->x != NULL) {
+        free_tensor(this->x);
+    }
+    if (this->fx != NULL) {
+        free_tensor(this->fx);
+    }
+    if (this->dfx != NULL) {
+        free_tensor(this->dfx);
+    }
 }
 
 // Print layer name
@@ -40,7 +46,7 @@ Tensor* Softmax::forward(const Tensor *input) {
     }
     this->x = (Tensor*) malloc(sizeof(Tensor));
     // Copy input to x
-    copy_tensor(this->x, (Tensor*) input);
+    copy_tensor(this->x, input);
 
     if (this->fx != NULL) {
         free_tensor(this->fx);
@@ -64,7 +70,7 @@ Tensor* Softmax::backward(const Tensor *upstream_grad) {
         free_tensor(this->dfx);
     }
     this->dfx = (Tensor*) malloc(sizeof(Tensor));
-    copy_tensor(this->dfx, (Tensor*) this->fx);
+    copy_tensor(this->dfx, (const Tensor*) this->fx);
 
     // Compute softmax gradient
     softmax_gradient_batch(upstream_grad->data, this->fx->data, this->dfx->data, size, this->n_classes);

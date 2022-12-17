@@ -20,9 +20,15 @@ ReLU::ReLU(const int n_features, const std::string name) {
 // Destructor
 ReLU::~ReLU() {
     // Free memory
-    free_tensor(this->x);
-    free_tensor(this->fx);
-    free_tensor(this->dfx); 
+    if (this->x != NULL) {
+        free_tensor(this->x);
+    }
+    if (this->fx != NULL) {
+        free_tensor(this->fx);
+    }
+    if (this->dfx != NULL) {
+        free_tensor(this->dfx);
+    }
 }
 
 // Print layer
@@ -40,7 +46,7 @@ Tensor* ReLU::forward(const Tensor *input) {
     }
     this->x = (Tensor*) malloc(sizeof(Tensor));
     // Copy input to x
-    copy_tensor(this->x, (Tensor*) input);
+    copy_tensor(this->x, input);
     
     if (this->fx != NULL) {
         free_tensor(this->fx);
@@ -66,7 +72,7 @@ Tensor* ReLU::backward(const Tensor *upstream_grad) {
     }
 
     this->dfx = (Tensor*) malloc(sizeof(Tensor));
-    copy_tensor(this->dfx, (Tensor*) upstream_grad);
+    copy_tensor(this->dfx, upstream_grad);
 
     // Compute relu gradient
     relu_gradient_batch(this->x->data, this->dfx->data, size, this->n_features);

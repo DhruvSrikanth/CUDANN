@@ -25,7 +25,7 @@ class MSE {
         ~MSE();
 
         // Forward pass
-        Tensor *forward(Tensor *input, Tensor *target);
+        Tensor *forward(const Tensor *input, const Tensor *target);
 
         // Backward pass
         Tensor *backward();

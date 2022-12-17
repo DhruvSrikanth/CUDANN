@@ -22,11 +22,11 @@ class Tensor {
         void print();
 
         // Clip tensor data
-        void clip(const double min, const double max);
+        void clip(const double* min, const double* max);
 };
 
 void free_tensor(Tensor *tensor);
-void copy_tensor(Tensor *dst, Tensor *src);
+void copy_tensor(Tensor *dst, const Tensor *src);
 void create_tensor(Tensor *tensor, const int n_batches, const int n_features);
 void initialize_tensor(Tensor *tensor, const int n_batches, const int n_features, const double *data);
 
