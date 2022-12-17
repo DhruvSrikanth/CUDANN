@@ -75,17 +75,18 @@ int main(int argc, char *argv[]) {
 
     // Compute loss
     Tensor *loss = mse.forward(&input, &target);
+    // loss->print();
     // Average loss
-    // double avg_loss = 0.0;
-    // for (int i = 0; i < n_batches; i++) {
-    //     avg_loss += loss->data[i];
-    // }
-    // avg_loss /= n_batches;
-    // std::cout << "Average loss: " << avg_loss << std::endl;
+    double avg_loss = 0.0;
+    for (int i = 0; i < n_batches; i++) {
+        avg_loss += loss->data[i];
+    }
+    avg_loss /= n_batches;
+    std::cout << "Average loss: " << avg_loss << std::endl;
 
     // Compute gradient
     Tensor *grad = mse.backward();
-    grad->print();
+    // grad->print();
 
 
     return 0;

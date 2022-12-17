@@ -50,6 +50,24 @@ void create_tensor(Tensor *tensor, const int n_batches, const int n_features) {
     tensor->data = (double *) malloc(n_batches * n_features * sizeof(double));
 }
 
+// Clip tensor
+void Tensor::clip(const double min, const double max) {
+    for (int b = 0; b < this->n_batches; b++) {
+        for (int f = 0; f < this->n_features; f++) {
+            if (min != NULL) {
+                if (this->data[b * this->n_features + f] < min) {
+                    this->data[b * this->n_features + f] = min;
+                }
+            }
+            if (max != NULL) {
+                if (this->data[b * this->n_features + f] > max) {
+                    this->data[b * this->n_features + f] = max;
+                }
+            }
+        }
+    }
+}
+
 // Print tensor
 void Tensor::print() {
     for (int b = 0; b < this->n_batches; b++) {

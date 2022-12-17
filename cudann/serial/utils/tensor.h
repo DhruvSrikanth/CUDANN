@@ -20,6 +20,9 @@ class Tensor {
 
         // Print tensor data
         void print();
+
+        // Clip tensor data
+        void clip(const double min, const double max);
 };
 
 void free_tensor(Tensor *tensor);
