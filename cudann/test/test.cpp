@@ -6,6 +6,7 @@
 #include <time.h> 
 
 #include "../serial/utils/tensor.h"
+#include "../serial/utils/initialize.h"
 #include "../serial/layers/linear.h"
 #include "../serial/layers/softmax.h"
 #include "../serial/layers/relu.h"
@@ -33,6 +34,29 @@ int main(int argc, char *argv[]) {
     // Print model summary
     model.summary();
 
+    // Create random input tensor
+    double *data = (double*) malloc(n_batches*n_features*sizeof(double));
+    for (int i = 0; i < n_batches*n_features; i++) {
+        data[i] = (double) rand() / (double) RAND_MAX;
+    }
+    Tensor input(n_batches, n_features, data);
+    
+    // Forward pass
+    Tensor *output = model.forward(&input);
+
+    // Create random upstream gradient tensor
+    double *grad_data = (double*) malloc(n_batches*n_classes*sizeof(double));
+    for (int i = 0; i < n_batches*n_classes; i++) {
+        grad_data[i] = (double) rand() / (double) RAND_MAX;
+    }
+    Tensor upstream_grad(n_batches, n_classes, grad_data);
+
+    // Backward pass
+    Tensor *downstream_grad = model.backward(&upstream_grad);
+
+    // Update weights
+    model.update_weights(learning_rate);
+    
     return 0;
 }
 
