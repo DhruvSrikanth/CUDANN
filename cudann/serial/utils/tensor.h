@@ -17,6 +17,9 @@ class Tensor {
 
         // Print tensor information
         void show();
+
+        // Print tensor data
+        void print();
 };
 
 void free_tensor(Tensor *tensor);

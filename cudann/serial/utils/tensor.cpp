@@ -49,3 +49,13 @@ void create_tensor(Tensor *tensor, const int n_batches, const int n_features) {
     tensor->n_features = n_features;
     tensor->data = (double *) malloc(n_batches * n_features * sizeof(double));
 }
+
+// Print tensor
+void Tensor::print() {
+    for (int b = 0; b < this->n_batches; b++) {
+        for (int f = 0; f < this->n_features; f++) {
+            printf("%f ", this->data[b * this->n_features + f]);
+        }
+        printf("\n");
+    }
+}
