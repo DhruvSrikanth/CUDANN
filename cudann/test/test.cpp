@@ -40,18 +40,22 @@ int main(int argc, char *argv[]) {
     // Backward pass
     double *upstream_grad = (double *) malloc(n_batches * n_features * sizeof(double));
     for (int i = 0; i < n_batches * n_features; i++) {
-        upstream_grad[i] = i - (n_batches * n_features / 2);
+        if (i - (n_batches * n_features / 2) > 0) {
+            upstream_grad[i] = 1;
+        } else {
+            upstream_grad[i] = 0;
+        }
     }
     Tensor upstream_grad_tensor(n_batches, n_features, upstream_grad);
     Tensor *input_grad = relu.backward(&upstream_grad_tensor);
 
     // Print output as a matrix
-    // for(int b = 0; b < n_batches; b++){
-    //     for(int i = 0; i < n_features; i++){
-    //         std::cout << input_grad->data[b * n_features + i] << ",";
-    //     }
-    //     std::cout << std::endl;
-    // }
+    for(int b = 0; b < n_batches; b++){
+        for(int i = 0; i < n_features; i++){
+            std::cout << input_grad->data[b * n_features + i] << ",";
+        }
+        std::cout << std::endl;
+    }
 
 
 

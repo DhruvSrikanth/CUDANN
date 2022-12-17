@@ -15,24 +15,22 @@ ReLU::ReLU(const int n_features, const std::string name) {
     Tensor tensor(1, n_features, data);
 
     // Initialize array for cache locality (i.e. contiguous memory) and cached access since same and similar locations frequently
-    this->x = (Tensor*) malloc(sizeof(Tensor));
-    this->fx = (Tensor*) malloc(sizeof(Tensor));
-    this->dfx = (Tensor*) malloc(sizeof(Tensor));
-    this->x = &tensor;
-    this->fx = &tensor;
-    this->dfx = &tensor;
+    this->x = NULL;
+    this->fx = NULL;
+    this->dfx = NULL;
 }
     
 
 // Destructor
 ReLU::~ReLU() {
-    free(this->x->data);
-    free(this->fx->data);
-    free(this->dfx->data);
-    free(this->x);
-    free(this->fx);
-    free(this->dfx);
+    // Free memory
+    free_tensor(this->x);
+    free_tensor(this->fx);
+    free_tensor(this->dfx); 
 }
+
+
+
 
 // Print layer
 void ReLU::show() {
@@ -42,17 +40,19 @@ void ReLU::show() {
 Tensor* ReLU::forward(const Tensor *input) {
     const int size = input->n_batches * this->n_features;
 
-    // Reallocate memory for input, output and input gradient
-    this->x->n_batches = input->n_batches;
-    std::cout<<"size: "<<size<<std::endl;
-    double *p = (double*) realloc(this->x->data, size * sizeof(double));
-    this->x->data = p;
-    std::cout<<"size: "<<size<<std::endl;
-    this->fx->n_batches = input->n_batches;
-    this->fx->data = (double*) realloc(this->fx->data, size * sizeof(double));
+    // Allocate memory for input, output and input gradient
+    if (this->x != NULL) {
+        free_tensor(this->x);
+        free_tensor(this->fx);
 
+    }
+    this->x = (Tensor*) malloc(sizeof(Tensor));
+    this->fx = (Tensor*) malloc(sizeof(Tensor));
+    create_tensor(this->x, input->n_batches, this->n_features);
+    create_tensor(this->fx, input->n_batches, this->n_features);
 
-    memcpy(this->x->data, input->data, size * sizeof(double));
+    // Copy input to x
+    copy_tensor(this->x, (Tensor*) input);
 
     // Compute relu activation
     relu_activation_batch(this->x->data, this->fx->data, size, this->n_features);
@@ -66,9 +66,12 @@ Tensor* ReLU::backward(const Tensor *upstream_grad) {
     const int size = upstream_grad->n_batches * this->n_features;
 
     // Copy upstream gradient to dfx
-    this->dfx->n_batches = upstream_grad->n_batches;
-    this->dfx->data = (double*) realloc(this->dfx->data, size * sizeof(double));
-    memcpy(this->dfx->data, upstream_grad->data, size * sizeof(double));
+    if (this->dfx != NULL) {
+        free_tensor(this->dfx);
+    }
+
+    this->dfx = (Tensor*) malloc(sizeof(Tensor));
+    copy_tensor(this->dfx, (Tensor*) upstream_grad);
 
     // Compute relu gradient
     relu_gradient_batch(this->x->data, this->dfx->data, size, this->n_features);

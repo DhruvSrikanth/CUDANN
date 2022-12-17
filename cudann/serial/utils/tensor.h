@@ -1,6 +1,7 @@
 #ifndef TENSOR_H
 #define TENSOR_H
 
+
 class Tensor {
     public:
         // Initialize the Tensor
@@ -17,5 +18,10 @@ class Tensor {
         // Print tensor information
         void show();
 };
+
+void free_tensor(Tensor *tensor);
+void copy_tensor(Tensor *dst, Tensor *src);
+void create_tensor(Tensor *tensor, const int n_batches, const int n_features);
+void initialize_tensor(Tensor *tensor, const int n_batches, const int n_features, const double *data);
 
 #endif
