@@ -2,13 +2,15 @@
 #define LINEAR_H
 
 #include "layer.h"
+#include "../utils/tensor.h"
+#include <string>
 
 void linear_transformation_batch(const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag);
 void linear_transformation(const int b, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* fx, const bool bias_flag);
 void linear_transformation_gradient_batch(const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int n_batches);
 void linear_transformation_gradient(const int b, const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int n_batches);
 
-class Linear{
+class Linear: public Layer {
     public:
         // Perceptron Layer size
         int in_features;
@@ -28,9 +30,9 @@ class Linear{
         double *bias;
 
         // Input, output, input gradient, weight gradient and bias gradient
-        double *x;
-        double *fx;
-        double *dfx;
+        Tensor *x;
+        Tensor *fx;
+        Tensor *dfx;
         double *dW;
         double *db;
         double *mean_dW;
@@ -46,10 +48,10 @@ class Linear{
         void show();
 
         // Forward call
-        double* forward(const double *input);
+        Tensor* forward(const Tensor *input);
 
         // Backward call
-        double* backward(const double *upstream_grad);
+        Tensor* backward(const Tensor *upstream_grad);
 
         // Update weights
         void update_params(const double learning_rate);

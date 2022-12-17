@@ -25,9 +25,6 @@ ReLU::~ReLU() {
     free_tensor(this->dfx); 
 }
 
-
-
-
 // Print layer
 void ReLU::show() {
     std::printf("%s: [%d]\n", this->name.c_str(), this->n_features);
