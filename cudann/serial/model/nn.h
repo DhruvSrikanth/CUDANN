@@ -16,9 +16,6 @@ class NN {
         // Pointer to layers
         Layer **layers;
 
-        // Layer types
-        std::string *layer_types;
-
         // Initialize the Softmax Layer
         NN(const std::string name="NN");
 
@@ -29,7 +26,7 @@ class NN {
         void summary();
 
         // Add layer
-        void add_layer(const Layer *layer, const std::string layer_type);
+        void add_layer(const Layer *layer);
 
         // Forward call
         Tensor* forward(const Tensor *input);

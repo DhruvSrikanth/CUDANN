@@ -7,7 +7,6 @@ NN::NN(const std::string name) {
     this->name = name;
     this->n_layers = 0;
     this->layers = (Layer**) calloc(0, sizeof(Layer*));
-    this->layer_types = (std::string*) calloc(0, sizeof(std::string));
 }
 
 // Destructor
@@ -27,14 +26,11 @@ void NN::summary() {
 }
 
 // Add layer
-void NN::add_layer(const Layer *layer, const std::string layer_type) {
+void NN::add_layer(const Layer *layer) {
     this->n_layers++;
 
     this->layers = (Layer**) realloc(this->layers, this->n_layers * sizeof(Layer*));
     this->layers[this->n_layers - 1] = (Layer*) layer;
-
-    this->layer_types = (std::string*) realloc(this->layer_types, this->n_layers * sizeof(std::string));
-    this->layer_types[this->n_layers - 1] = layer_type;
 }
 
 // Forward call

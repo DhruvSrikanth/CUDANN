@@ -8,54 +8,32 @@
 #include "../serial/utils/tensor.h"
 #include "../serial/utils/initialize.h"
 #include "../serial/layers/linear.h"
+#include "../serial/layers/softmax.h"
+#include "../serial/layers/relu.h"
+#include "../serial/model/nn.h"
 
 int main(int argc, char *argv[]) {
-    // Add layers
     const int n_classes = 10;
     const int n_features = 28*28;
     const int n_batches = 2;
     const double learning_rate = 0.01;
 
-    // Softmax layer
-    Linear linear(n_features, n_classes, true, "random", "Linear");
-    linear.show();
+    // Add layers
+    Linear linear1(n_features, 128, true, "random", "linear1");
+    ReLU relu1(128, "relu1");
+    Linear linear2(128, n_classes, true, "random", "linear2");
+    Softmax softmax(n_classes, "softmax");
 
-    // Random input tensor
-    double *input = (double *) malloc(n_batches * n_features * sizeof(double));
-    initialize_weights(input, n_batches, n_features, "random");
-    Tensor input_tensor(n_batches, n_features, input);
+    // Create model and add layers
+    NN model;
+    model.add_layer(&linear1);
+    model.add_layer(&relu1);
+    model.add_layer(&linear2);
+    model.add_layer(&softmax);
 
-    // // Forward pass
-    Tensor *output = linear.forward(&input_tensor);
-
-    // Print output as a matrix
-    // for(int b = 0; b < n_batches; b++){
-    //     for(int i = 0; i < n_classes; i++){
-    //         std::printf("%f,", output->data[b * n_classes + i]);
-    //     }
-    //     std::cout << std::endl;
-    // }
+    // Print model summary
+    model.summary();
     
-
-    // Backward pass
-    double *upstream_grad = (double *) malloc(n_batches * n_classes * sizeof(double));
-    initialize_weights(upstream_grad, n_batches, n_classes, "random");
-    Tensor upstream_grad_tensor(n_batches, n_classes, upstream_grad);
-    
-    Tensor *input_grad = linear.backward(&upstream_grad_tensor);
-
-    // Print output as a matrix
-    for(int b = 0; b < n_batches; b++){
-        for(int i = 0; i < n_features; i++){
-            std::cout << input_grad->data[b * n_features + i] << ",";
-        }
-        std::cout << std::endl;
-    }
-
-
-
-
-
     return 0;
 }
 
