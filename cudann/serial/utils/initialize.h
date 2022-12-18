@@ -6,3 +6,4 @@ void uniform_initialization(double *weights, const int in_features, const int ou
 void initialize_zeros(double *x, const int size);
 void initialize_ones(double *x, const int size);
 void initialize_salt_and_pepper(double *x, const int size);
+void initialize_random(double *x, const int size);

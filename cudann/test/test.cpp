@@ -11,7 +11,7 @@
 #include "../serial/layers/softmax.h"
 #include "../serial/layers/relu.h"
 #include "../serial/model/nn.h"
-#include "../serial/criterion/mse.h"
+#include "../serial/criterion/ce.h"
 
 int main(int argc, char *argv[]) {
     const int n_classes = 10;
@@ -57,37 +57,6 @@ int main(int argc, char *argv[]) {
 
     // // Update weights
     // model.update_weights(learning_rate);
-
-    // Test loss function
-    // Create random input tensor of 1s and 0s
-    double *data = (double*) malloc(n_batches*n_classes*sizeof(double));
-    initialize_salt_and_pepper(data, n_batches*n_classes);
-    Tensor input(n_batches, n_classes, data);
-
-
-    // Create random target tensor of 1s and 0s
-    double *target_data = (double*) malloc(n_batches*n_classes*sizeof(double));
-    initialize_salt_and_pepper(target_data, n_batches*n_classes);
-    Tensor target(n_batches, n_classes, target_data);
-
-    // Create loss function
-    MSE mse("mse");
-
-    // Compute loss
-    Tensor *loss = mse.forward(&input, &target);
-    loss->print();
-    // Average loss
-    double avg_loss = 0.0;
-    for (int i = 0; i < n_batches; i++) {
-        avg_loss += loss->data[i];
-    }
-    avg_loss /= n_batches;
-    std::cout << "Average loss: " << avg_loss << std::endl;
-
-    // Compute gradient
-    Tensor *grad = mse.backward();
-    grad->print();
-
 
     return 0;
 }

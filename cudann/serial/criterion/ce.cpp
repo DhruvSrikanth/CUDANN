@@ -79,13 +79,25 @@ Tensor *CrossEntropy::backward() {
 // Compute cross entropy for a batch
 void ce_batch(const double *input, const double *target, double *fx, const int n_features, const int n_batches) {
     for (int b = 0; b < n_batches; b++) {
+        // Reset cross entropy for a single sample
+        fx[b] = 0.0;
+
+        // Compute cross entropy for a single sample
         ce(b, input, target, fx, n_features);
+
+        // Compute mean across features
+        fx[b] /= n_features;
     }
 }
 
 // Compute cross entropy for a single sample
 void ce(const int b, const double *input, const double *target, double *fx, const int n_features) {
-    
+    // (np.where(self.y == 1, -np.log(self.y_hat), 0)).sum(axis=1)
+    for (int i = 0; i < n_features; i++) {
+        if (target[b * n_features + i] == 1.0) {
+            fx[b] += -log(input[b * n_features + i]);
+        }
+    }
 }
 
 // Compute cross entropy gradient for a batch
@@ -97,6 +109,13 @@ void ce_grad_batch(const double *input, const double *target, double *grad, cons
 
 // Compute cross entropy gradient for a single sample
 void ce_grad(const int b, const double *input, const double *target, double *grad, const int n_features) {
-    
+    // np.where(self.y == 1, -1 / self.y_hat, 0)
+    for (int i = 0; i < n_features; i++) {
+        if (target[b * n_features + i] == 1.0) {
+            grad[b * n_features + i] = -1.0 / input[b * n_features + i];
+        } else {
+            grad[b * n_features + i] = 0.0;
+        }
+    }
 }
 

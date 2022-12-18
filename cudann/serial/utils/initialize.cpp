@@ -64,3 +64,12 @@ void initialize_salt_and_pepper(double *x, const int size) {
         }
     }
 }
+
+void initialize_random(double *x, const int size) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> d(0, 1);
+    for (int i = 0; i < size; i++) {
+        x[i] = d(gen);
+    }
+}
