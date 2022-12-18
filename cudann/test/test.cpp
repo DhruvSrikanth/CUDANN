@@ -51,8 +51,6 @@ int main(int argc, char *argv[]) {
     double *target_data = (double*) malloc(n_batches*n_classes*sizeof(double));
     initialize_salt_and_pepper(target_data, n_batches*n_classes);
     Tensor target(n_batches, n_classes, target_data);
-
-
     
     // Forward pass
     Tensor *output = model.forward(&input);
