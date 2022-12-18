@@ -23,6 +23,9 @@ class Tensor {
 
         // Clip tensor data
         void clip(const double* min, const double* max);
+
+        // Sum tensor data
+        double sum();
 };
 
 void free_tensor(Tensor *tensor);

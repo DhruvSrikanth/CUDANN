@@ -51,6 +51,11 @@ Tensor *MSE::backward() {
     return this->grad;
 }
 
+// Print the loss name
+void MSE::show() {
+    std::printf("%s\n", this->name.c_str());
+}
+
 
 // Compute mse for a batch
 void mse_batch(const double *input, const double *target, double *fx, const int n_features, const int n_batches) {

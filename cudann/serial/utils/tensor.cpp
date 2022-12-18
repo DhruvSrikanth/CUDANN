@@ -77,3 +77,14 @@ void Tensor::print() {
         printf("\n");
     }
 }
+
+// Sum tensor data
+double Tensor::sum() {
+    double sum_ = 0.0;
+    for (int b = 0; b < this->n_batches; b++) {
+        for (int f = 0; f < this->n_features; f++) {
+            sum_ += this->data[b * this->n_features + f];
+        }
+    }
+    return sum_;
+}

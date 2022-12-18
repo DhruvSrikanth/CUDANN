@@ -32,7 +32,7 @@ class NN {
         Tensor* forward(const Tensor *input);
 
         // Backward call
-        Tensor* backward(const Tensor *upstream_grad);
+        void backward(const Tensor *upstream_grad);
 
         // Update weights
         void update_weights(const double learning_rate);

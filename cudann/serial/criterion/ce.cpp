@@ -76,6 +76,11 @@ Tensor *CrossEntropy::backward() {
     return this->grad;
 }
 
+// Print the loss name
+void CrossEntropy::show() {
+    std::printf("%s\n", this->name.c_str());
+}
+
 // Compute cross entropy for a batch
 void ce_batch(const double *input, const double *target, double *fx, const int n_features, const int n_batches) {
     for (int b = 0; b < n_batches; b++) {

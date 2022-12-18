@@ -23,9 +23,13 @@ class CrossEntropy {
         
         std::string name;
 
+
         
         // Constructor
         CrossEntropy(const std::string name="crossentropy");
+
+        // Print the loss name
+        void show();
 
         // Destructor
         ~CrossEntropy();

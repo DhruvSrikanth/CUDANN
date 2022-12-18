@@ -24,6 +24,9 @@ class MSE {
         // Destructor
         ~MSE();
 
+        // Print the loss name
+        void show();
+
         // Forward pass
         Tensor *forward(const Tensor *input, const Tensor *target);
 

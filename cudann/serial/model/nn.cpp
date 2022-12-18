@@ -45,14 +45,13 @@ Tensor* NN::forward(const Tensor *input) {
 }
 
 // Backward call
-Tensor* NN::backward(const Tensor *upstream_grad) {
+void NN::backward(const Tensor *upstream_grad) {
     Tensor *downstream_grad = (Tensor*) malloc(sizeof(Tensor));
     copy_tensor(downstream_grad, upstream_grad);
 
     for (int i = this->n_layers - 1; i >= 0; i--) {
         downstream_grad = this->layers[i]->backward(downstream_grad);
     }
-    return downstream_grad;
 }
 
 // Update weights
