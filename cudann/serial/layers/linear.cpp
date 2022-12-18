@@ -16,7 +16,6 @@ Linear::Linear(const int in_features, const int out_features, const bool bias, c
     // Output neurons are columns and input neurons are rows, therefore weight matrix is of shape (in_features, out_features)
     this->weight = (double*) malloc(this->in_features * this->out_features * sizeof(double));
     initialize_weights(this->weight, this->in_features, this->out_features, this->initialization);
-
     // Set bias flag and initialize bias
     this->bias_flag = bias;
     if (this->bias_flag) {

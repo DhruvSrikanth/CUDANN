@@ -5,13 +5,7 @@
 #include <ctime>
 #include <time.h> 
 
-#include "../serial/utils/tensor.h"
-#include "../serial/utils/initialize.h"
-#include "../serial/layers/linear.h"
-#include "../serial/layers/softmax.h"
-#include "../serial/layers/relu.h"
-#include "../serial/model/nn.h"
-#include "../serial/criterion/ce.h"
+#include "../serial/cudann.h"
 
 int main(int argc, char *argv[]) {
     const int n_classes = 10;

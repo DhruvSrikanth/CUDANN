@@ -12,6 +12,7 @@ make test
 A working example of the framework can be seen below - 
 
 ```c++
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,13 +20,7 @@ A working example of the framework can be seen below -
 #include <ctime>
 #include <time.h> 
 
-#include "../serial/utils/tensor.h"
-#include "../serial/utils/initialize.h"
-#include "../serial/layers/linear.h"
-#include "../serial/layers/softmax.h"
-#include "../serial/layers/relu.h"
-#include "../serial/model/nn.h"
-#include "../serial/criterion/ce.h"
+#include "../serial/cudann.h"
 
 int main(int argc, char *argv[]) {
     const int n_classes = 10;
@@ -87,6 +82,8 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
 ```
 
 This is the output of the above code - 
