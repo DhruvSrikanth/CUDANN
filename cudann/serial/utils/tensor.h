@@ -5,12 +5,12 @@
 class Tensor {
     public:
         // Initialize the Tensor
-        int n_batches;
+        int batch_size;
         int n_features;
         double *data;
 
         // Initialize the Tensor
-        Tensor(const int n_batches, const int n_features, const double *data);
+        Tensor(const int batch_size, const int n_features, const double *data);
 
         // Destructor
         ~Tensor();
@@ -30,7 +30,7 @@ class Tensor {
 
 void free_tensor(Tensor *tensor);
 void copy_tensor(Tensor *dst, const Tensor *src);
-void create_tensor(Tensor *tensor, const int n_batches, const int n_features);
-void initialize_tensor(Tensor *tensor, const int n_batches, const int n_features, const double *data);
+void create_tensor(Tensor *tensor, const int batch_size, const int n_features);
+void initialize_tensor(Tensor *tensor, const int batch_size, const int n_features, const double *data);
 
 #endif

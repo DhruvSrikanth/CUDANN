@@ -4,9 +4,9 @@
 #include "../utils/tensor.h"
 #include <string>
 
-void mse_batch(const double *input, const double *target, double *fx, const int n_features, const int n_batches);
+void mse_batch(const double *input, const double *target, double *fx, const int n_features, const int batch_size);
 void mse(const int b, const double *input, const double *target, double *fx, const int n_features);
-void mse_grad_batch(const int n_batches, const double *input, const double *target, double* grad, const int n_features);
+void mse_grad_batch(const int batch_size, const double *input, const double *target, double* grad, const int n_features);
 void mse_grad(const int b, const double *input, const double *target, double* grad, const int n_features);
 
 class MSE {

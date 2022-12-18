@@ -21,26 +21,26 @@ MSE::~MSE() {
 
 // Compute mse
 Tensor *MSE::forward(const Tensor *input, const Tensor *target) {
-    const int size = input->n_batches * input->n_features;
+    const int size = input->batch_size * input->n_features;
     
     // Allocate memory for input and gradient
     if (this->fx != NULL) {
         free(this->fx);
     }
     this->fx = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->fx, input->n_batches, 1);
+    create_tensor(this->fx, input->batch_size, 1);
 
     if (this->grad != NULL) {
         free(this->grad);
     }
     this->grad = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->grad, input->n_batches, input->n_features);
+    create_tensor(this->grad, input->batch_size, input->n_features);
 
     // Compute mse
-    mse_batch(input->data, target->data, this->fx->data, input->n_features, input->n_batches);
+    mse_batch(input->data, target->data, this->fx->data, input->n_features, input->batch_size);
 
     // Compute mse gradient
-    mse_grad_batch(input->n_batches, input->data, target->data, this->grad->data, input->n_features);
+    mse_grad_batch(input->batch_size, input->data, target->data, this->grad->data, input->n_features);
 
     // Return output
     return this->fx;
@@ -58,8 +58,8 @@ void MSE::show() {
 
 
 // Compute mse for a batch
-void mse_batch(const double *input, const double *target, double *fx, const int n_features, const int n_batches) {
-    for (int b = 0; b < n_batches; b++) {
+void mse_batch(const double *input, const double *target, double *fx, const int n_features, const int batch_size) {
+    for (int b = 0; b < batch_size; b++) {
         // Initialize output
         fx[b*n_features] = 0.0;
 
@@ -79,8 +79,8 @@ void mse(const int b, const double *input, const double *target, double *fx, con
 }
 
 // Compute mse gradient for a batch
-void mse_grad_batch(const int n_batches, const double *input, const double *target, double* grad, const int n_features) {
-    for (int b = 0; b < n_batches; b++) {
+void mse_grad_batch(const int batch_size, const double *input, const double *target, double* grad, const int n_features) {
+    for (int b = 0; b < batch_size; b++) {
         mse_grad(b, input, target, grad, n_features);
     }
 }

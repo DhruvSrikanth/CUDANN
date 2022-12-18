@@ -36,7 +36,7 @@ void Sigmoid::show() {
 
 // Forward call
 Tensor* Sigmoid::forward(const Tensor *input) {
-    const int size = input->n_batches * this->n_features;
+    const int size = input->batch_size * this->n_features;
 
     // Reallocate memory for input, output and input gradient
     if (this->x != NULL) {
@@ -50,7 +50,7 @@ Tensor* Sigmoid::forward(const Tensor *input) {
         free_tensor(this->fx);
     }
     this->fx = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->fx, input->n_batches, this->n_features);
+    create_tensor(this->fx, input->batch_size, this->n_features);
 
     // Compute sigmoid transformation
     sigmoid_activation_batch(this->x->data, this->fx->data, size, this->n_features);
@@ -61,7 +61,7 @@ Tensor* Sigmoid::forward(const Tensor *input) {
 
 // Backward call
 Tensor* Sigmoid::backward(const Tensor *upstream_grad) {
-    const int size = upstream_grad->n_batches * this->n_features;
+    const int size = upstream_grad->batch_size * this->n_features;
 
     // Copy upstream gradient to dfx
     if (this->dfx != NULL) {
@@ -80,8 +80,8 @@ Tensor* Sigmoid::backward(const Tensor *upstream_grad) {
 // Sigmoid activation on batch - y(b, n_features) = 1 / (1 + e^-x) (b, n_features)
 void sigmoid_activation_batch(const double *x, double *fx, const int size, const int n_features) {
     // Perform sigmoid activation on each batch
-    const int n_batches = size / n_features;
-    for (int b = 0; b < n_batches; b++) {
+    const int batch_size = size / n_features;
+    for (int b = 0; b < batch_size; b++) {
         sigmoid_activation(b, x, fx, n_features);
     }
 }
@@ -97,8 +97,8 @@ void sigmoid_activation(const int b, const double *x, double *fx, const int n_fe
 // Sigmoid gradient on batch - y(b, n_features) = fx * (1 - fx) (b, n_features)
 void sigmoid_gradient_batch(const double *fx, double *dfx, const int size, const int n_features) {
     // Compute sigmoid gradient
-    const int n_batches = size / n_features;
-    for (int b = 0; b < n_batches; b++) {
+    const int batch_size = size / n_features;
+    for (int b = 0; b < batch_size; b++) {
         sigmoid_gradient(b, fx, dfx, n_features);
     }
 }

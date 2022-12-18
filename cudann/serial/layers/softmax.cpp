@@ -38,7 +38,7 @@ void Softmax::show() {
 
 // Forward call
 Tensor* Softmax::forward(const Tensor *input) {
-    const int size = input->n_batches * this->n_classes;
+    const int size = input->batch_size * this->n_classes;
 
     // Allocate memory for input, output and input gradient
     if (this->x != NULL) {
@@ -52,7 +52,7 @@ Tensor* Softmax::forward(const Tensor *input) {
         free_tensor(this->fx);
     }
     this->fx = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->fx, input->n_batches, this->n_classes);
+    create_tensor(this->fx, input->batch_size, this->n_classes);
 
     // Compute softmax transformation
     softmax_activation_batch(this->x->data, this->fx->data, size, this->n_classes);
@@ -63,7 +63,7 @@ Tensor* Softmax::forward(const Tensor *input) {
 
 // Backward call
 Tensor* Softmax::backward(const Tensor *upstream_grad) {
-    const int size = upstream_grad->n_batches * this->n_classes;
+    const int size = upstream_grad->batch_size * this->n_classes;
 
     // Copy upstream gradient to dfx
     if (this->dfx != NULL) {
@@ -81,8 +81,8 @@ Tensor* Softmax::backward(const Tensor *upstream_grad) {
 // Softmax activation on batch - y(b, n_classes) = e^(x(b, n_classes)) / sum(e^(x(b, n_classes))) (b, n_classes)
 void softmax_activation_batch(const double *x, double *fx, const int size, const int n_classes) {
     // Perform softmax activation on each batch
-    const int n_batches = size / n_classes;
-    for (int b = 0; b < n_batches; b++) {
+    const int batch_size = size / n_classes;
+    for (int b = 0; b < batch_size; b++) {
         softmax_activation(b, x, fx, n_classes);
     }
 }
@@ -103,8 +103,8 @@ void softmax_activation(const int b, const double *x, double *fx, const int n_cl
 // Softmax gradient on batch - y(b, n_classes) = fx(b, n_classes) * (upstream_grad(b, n_classes) - fx(b, n_classes) * upstream_grad(b, n_classes)) (b, n_classes)
 void softmax_gradient_batch(const double* upstream_grad, const double *fx, double *dfx, const int size, const int n_classes) {
     // Compute softmax gradient
-    const int n_batches = size / n_classes;
-    for (int b = 0; b < n_batches; b++) {
+    const int batch_size = size / n_classes;
+    for (int b = 0; b < batch_size; b++) {
         softmax_gradient(b, upstream_grad, fx, dfx, n_classes);
     }
 }

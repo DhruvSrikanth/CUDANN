@@ -4,11 +4,11 @@
 #include <cstring>
 
 // Tensor Constructor
-Tensor::Tensor(const int n_batches, const int n_features, const double *data) {
-    this->n_batches = n_batches;
+Tensor::Tensor(const int batch_size, const int n_features, const double *data) {
+    this->batch_size = batch_size;
     this->n_features = n_features;
-    this->data = (double *) malloc(n_batches * n_features * sizeof(double));
-    memcpy(this->data, data, n_batches * n_features * sizeof(double));
+    this->data = (double *) malloc(batch_size * n_features * sizeof(double));
+    memcpy(this->data, data, batch_size * n_features * sizeof(double));
 }
 
 // Tensor Destructor
@@ -18,7 +18,7 @@ Tensor::~Tensor() {
 
 // Print tensor
 void Tensor::show() {
-    printf("Tensor: [%d batches, %d features, %d size, %lu bytes]\n", this->n_batches, this->n_features, this->n_batches * this->n_features, this->n_batches * this->n_features * sizeof(double));
+    printf("Tensor: [%d batches, %d features, %d size, %lu bytes]\n", this->batch_size, this->n_features, this->batch_size * this->n_features, this->batch_size * this->n_features * sizeof(double));
 }
 
 // Free memory
@@ -29,30 +29,30 @@ void free_tensor(Tensor *tensor) {
 
 // Copy tensor
 void copy_tensor(Tensor *dst, const Tensor *src) {
-    dst->n_batches = src->n_batches;
+    dst->batch_size = src->batch_size;
     dst->n_features = src->n_features;
-    dst->data = (double *) malloc(src->n_batches * src->n_features * sizeof(double));
-    memcpy(dst->data, src->data, src->n_batches * src->n_features * sizeof(double));
+    dst->data = (double *) malloc(src->batch_size * src->n_features * sizeof(double));
+    memcpy(dst->data, src->data, src->batch_size * src->n_features * sizeof(double));
 }
 
 // Initialize tensor
-void initialize_tensor(Tensor *tensor, const int n_batches, const int n_features, const double *data) {
-    tensor->n_batches = n_batches;
+void initialize_tensor(Tensor *tensor, const int batch_size, const int n_features, const double *data) {
+    tensor->batch_size = batch_size;
     tensor->n_features = n_features;
-    tensor->data = (double *) malloc(n_batches * n_features * sizeof(double));
-    memcpy(tensor->data, data, n_batches * n_features * sizeof(double));
+    tensor->data = (double *) malloc(batch_size * n_features * sizeof(double));
+    memcpy(tensor->data, data, batch_size * n_features * sizeof(double));
 }
 
 // Create tensor
-void create_tensor(Tensor *tensor, const int n_batches, const int n_features) {
-    tensor->n_batches = n_batches;
+void create_tensor(Tensor *tensor, const int batch_size, const int n_features) {
+    tensor->batch_size = batch_size;
     tensor->n_features = n_features;
-    tensor->data = (double *) malloc(n_batches * n_features * sizeof(double));
+    tensor->data = (double *) malloc(batch_size * n_features * sizeof(double));
 }
 
 // Clip tensor
 void Tensor::clip(const double* min, const double* max) {
-    for (int b = 0; b < this->n_batches; b++) {
+    for (int b = 0; b < this->batch_size; b++) {
         for (int f = 0; f < this->n_features; f++) {
             if (min != nullptr) {
                 if (this->data[b * this->n_features + f] < *min) {
@@ -70,7 +70,7 @@ void Tensor::clip(const double* min, const double* max) {
 
 // Print tensor
 void Tensor::print() {
-    for (int b = 0; b < this->n_batches; b++) {
+    for (int b = 0; b < this->batch_size; b++) {
         for (int f = 0; f < this->n_features; f++) {
             printf("%f ", this->data[b * this->n_features + f]);
         }
@@ -81,7 +81,7 @@ void Tensor::print() {
 // Sum tensor data
 double Tensor::sum() {
     double sum_ = 0.0;
-    for (int b = 0; b < this->n_batches; b++) {
+    for (int b = 0; b < this->batch_size; b++) {
         for (int f = 0; f < this->n_features; f++) {
             sum_ += this->data[b * this->n_features + f];
         }

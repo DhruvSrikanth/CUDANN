@@ -37,7 +37,7 @@ void ReLU::show() {
 }
 
 Tensor* ReLU::forward(const Tensor *input) {
-    const int size = input->n_batches * this->n_features;
+    const int size = input->batch_size * this->n_features;
 
     // Allocate memory for input, output and input gradient
     if (this->x != NULL) {
@@ -52,7 +52,7 @@ Tensor* ReLU::forward(const Tensor *input) {
         free_tensor(this->fx);
     }
     this->fx = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->fx, input->n_batches, this->n_features);
+    create_tensor(this->fx, input->batch_size, this->n_features);
 
 
     // Compute relu activation
@@ -64,7 +64,7 @@ Tensor* ReLU::forward(const Tensor *input) {
 
 // Backward call
 Tensor* ReLU::backward(const Tensor *upstream_grad) {
-    const int size = upstream_grad->n_batches * this->n_features;
+    const int size = upstream_grad->batch_size * this->n_features;
 
     // Copy upstream gradient to dfx
     if (this->dfx != NULL) {
@@ -84,8 +84,8 @@ Tensor* ReLU::backward(const Tensor *upstream_grad) {
 // ReLU activation on a batch - y (b, n_features) = max(0, x) (b, n_features)
 void relu_activation_batch(const double *x, double *fx, const int size, const int n_features) {
     // Perform ReLU activation on each batch
-    const int n_batches = size / n_features;
-    for (int b = 0; b < n_batches; b++) {
+    const int batch_size = size / n_features;
+    for (int b = 0; b < batch_size; b++) {
         relu_activation(b, x, fx, n_features);
     }
     
@@ -106,8 +106,8 @@ void relu_activation(const int b, const double *x, double *fx, const int n_featu
 // ReLU gradient on a batch - y (b, n_features) = max(0, x) (b, n_features)
 void relu_gradient_batch(const double *x, double *dfx, const int size, const int n_features) {
     // Perform ReLU gradient on each batch
-    const int n_batches = size / n_features;
-    for (int b = 0; b < n_batches; b++) {
+    const int batch_size = size / n_features;
+    for (int b = 0; b < batch_size; b++) {
         relu_gradient(b, x, dfx, n_features);
     }   
 }

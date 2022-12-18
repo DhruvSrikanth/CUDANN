@@ -17,8 +17,6 @@
 // Criterion
 #include "criterion/mse.h"
 #include "criterion/ce.h"
-#include "criterion/criterion.h"
-
 
 // Model
 #include "model/nn.h"
