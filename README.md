@@ -6,10 +6,10 @@ A distributed implementation of a deep learning framework in CUDA.
 This can be tested using the following command - 
 
 ```shell
-make test
+make test_random
 ```
 
-A working example of the framework can be seen below - 
+The above command runs the following example of using the framework - 
 
 ```c++
 #include <stdio.h>
