@@ -6,13 +6,19 @@
 #include <time.h> 
 #include <unordered_map>
 
-
 #include "../serial/cudann.h"
 
+
+struct MiniBatch {
+    Tensor *input;
+    Tensor *target;
+};
+
 struct Dataloader {
-    std::unordered_map<std::string, const Tensor*> *minibatches;
+    MiniBatch *minibatches;
     int n_batches;
 };
+
 
 void train(const int n_classes, const int n_features, const int n_batches, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
     // Print model summary
@@ -27,17 +33,17 @@ void train(const int n_classes, const int n_features, const int n_batches, const
         // Compute average loss over a batch
         double avg_loss = 0.0;
         for (int mb = 0; mb < dataloader->n_batches; mb++) {
-            // Get minibatch
-            std::unordered_map<std::string, const Tensor*> minibatch = dataloader->minibatches[mb];
-            Tensor input = *minibatch["input"];
-            Tensor target = *minibatch["target"];
+            // Get minibatch and copy it to the appropriate device
+            Tensor *input = (Tensor*) malloc(sizeof(Tensor));
+            Tensor *target = (Tensor*) malloc(sizeof(Tensor));
+            copy_tensor(input, dataloader->minibatches[mb].input);
+            copy_tensor(target, dataloader->minibatches[mb].target);
 
             // Forward pass
-            Tensor *output = model->forward(&input);
-            std::cout << "Reached here\n";
+            Tensor *output = model->forward(input);
 
             // Compute loss
-            Tensor *loss = criterion->forward(output, &target);
+            Tensor *loss = criterion->forward(output, target);
             
             // Compute the loss gradient
             Tensor *downstream_grad = criterion->backward();
@@ -55,8 +61,6 @@ void train(const int n_classes, const int n_features, const int n_batches, const
         
         printf("Epoch %d: Average loss: %f\n", epoch + 1, avg_loss);
     }
-
-
 }
 
 int main(int argc, char *argv[]) {
@@ -83,14 +87,14 @@ int main(int argc, char *argv[]) {
     // Get loss function
     CrossEntropy criterion("cross_entropy");
 
-    // Data loader as an array of minibatches
-    std::unordered_map<std::string, const Tensor*> *minibatches = (std::unordered_map<std::string, const Tensor*>*) malloc(n_batches*sizeof(std::unordered_map<std::string, const Tensor*>));
+    // Create dataloader
+    Dataloader dataloader;
+    dataloader.n_batches = n_batches;
+    dataloader.minibatches = (MiniBatch*) malloc(n_batches*sizeof(MiniBatch));
     for (int i = 0; i < n_batches; i++) {
         // Create random input tensor
         double *data = (double*) malloc(batch_size*n_features*sizeof(double));
-        for (int i = 0; i < batch_size*n_features; i++) {
-            data[i] = (double) rand() / (double) RAND_MAX;
-        }
+        initialize_random(data, batch_size*n_features);
         Tensor input(batch_size, n_features, data);
 
         // Create the random target tensor
@@ -99,13 +103,15 @@ int main(int argc, char *argv[]) {
         Tensor target(batch_size, n_classes, target_data);
 
         // Create minibatch
-        std::unordered_map<std::string, const Tensor*> minibatch;
-        minibatch["input"] = &input;
-        minibatch["target"] = &target;
+        MiniBatch minibatch;
+        minibatch.input = (Tensor*) malloc(sizeof(Tensor));
+        minibatch.target = (Tensor*) malloc(sizeof(Tensor));
+        copy_tensor(minibatch.input, &input);
+        copy_tensor(minibatch.target, &target);
 
-        minibatches[i] = minibatch;
+        // Add minibatch to dataloader
+        dataloader.minibatches[i] = minibatch;
     }
-    Dataloader dataloader = {minibatches, n_batches};
 
     // Train the model
     train(n_classes, n_features, n_batches, learning_rate, epochs, &dataloader, &model, &criterion);
