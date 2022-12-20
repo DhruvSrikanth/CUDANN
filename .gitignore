@@ -34,3 +34,6 @@
 
 # vscode
 .vscode
+
+# data files
+cudann/test/data/*
