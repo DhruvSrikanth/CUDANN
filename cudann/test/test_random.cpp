@@ -20,7 +20,7 @@ struct Dataloader {
 };
 
 
-void train(const int n_classes, const int n_features, const int n_batches, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
+void train(const int n_classes, const int n_features, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
     // Print model summary
     model->summary();
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Train the model
-    train(n_classes, n_features, n_batches, learning_rate, epochs, &dataloader, &model, &criterion);
+    train(n_classes, n_features, learning_rate, epochs, &dataloader, &model, &criterion);
 
     
     return 0;

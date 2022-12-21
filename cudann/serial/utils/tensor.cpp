@@ -18,7 +18,7 @@ Tensor::~Tensor() {
 
 // Print tensor
 void Tensor::show() {
-    printf("Tensor: [%d batches, %d features, %d size, %lu bytes]\n", this->batch_size, this->n_features, this->batch_size * this->n_features, this->batch_size * this->n_features * sizeof(double));
+    printf("Tensor: [%d samples, %d features, %d size, %lu bytes]\n", this->batch_size, this->n_features, this->batch_size * this->n_features, this->batch_size * this->n_features * sizeof(double));
 }
 
 // Free memory
