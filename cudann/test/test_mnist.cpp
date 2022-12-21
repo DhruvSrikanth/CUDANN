@@ -118,6 +118,7 @@ void train(const int n_classes, const int n_features, const double learning_rate
         // Compute average loss over a batch
         double avg_loss = 0.0;
         for (int mb = 0; mb < dataloader->n_batches; mb++) {
+            std::cout << "Epoch " << epoch << " - Batch " << mb << std::endl;
             // Get minibatch and copy it to the appropriate device
             Tensor *input = (Tensor*) malloc(sizeof(Tensor));
             Tensor *target = (Tensor*) malloc(sizeof(Tensor));
