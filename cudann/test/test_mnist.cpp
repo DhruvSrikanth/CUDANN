@@ -114,31 +114,31 @@ void train(const int n_classes, const int n_features, const double learning_rate
 
     printf("Training model for %d epochs with learning rate %f.\n", epochs, learning_rate);
     // Train the model
+    Tensor *input = (Tensor*) malloc(sizeof(Tensor));
+    Tensor *target = (Tensor*) malloc(sizeof(Tensor));
     for (int epoch = 0; epoch < epochs; epoch++) {
         // Compute average loss over a batch
         double avg_loss = 0.0;
         float progress = 0.0;
         int barWidth = 70;
         for (int mb = 0; mb < dataloader->n_batches; mb++) {
-            // std::cout << "Epoch: " << epoch + 1 << " - [";
-            // int pos = barWidth * progress;
-            // for (int i = 0; i < barWidth; ++i) {
-            //     if (i < pos) {
-            //         std::cout << "=";
-            //     } else if (i == pos) {
-            //         std::cout << ">";
-            //     } else {
-            //         std::cout << " ";
-            //     }
-            // }
-            // std::cout << "] - " << mb << "/" << dataloader->n_batches << " (" << int(progress * 100.0) << "%) " << "Mean Batch Loss: " << avg_loss << "\r";
-            // std::cout.flush();
+            std::cout << "Epoch: " << epoch + 1 << " - [";
+            int pos = barWidth * progress;
+            for (int i = 0; i < barWidth; ++i) {
+                if (i < pos) {
+                    std::cout << "=";
+                } else if (i == pos) {
+                    std::cout << ">";
+                } else {
+                    std::cout << " ";
+                }
+            }
+            std::cout << "] - " << mb << "/" << dataloader->n_batches << " (" << int(progress * 100.0) << "%) " << "Average Loss: " << (double) avg_loss / mb << "\r";
+            std::cout.flush();
 
-            // progress += (float) 1.0 / dataloader->n_batches;
+            progress += (float) 1.0 / dataloader->n_batches;
             
             // Get minibatch and copy it to the appropriate device
-            Tensor *input = (Tensor*) malloc(sizeof(Tensor));
-            Tensor *target = (Tensor*) malloc(sizeof(Tensor));
             copy_tensor(input, dataloader->minibatches[mb].input);
             copy_tensor(target, dataloader->minibatches[mb].target);
 
@@ -160,11 +160,9 @@ void train(const int n_classes, const int n_features, const double learning_rate
             // Compute average loss
             avg_loss += loss->sum() / loss->batch_size;
         }
-
         avg_loss /= dataloader->n_batches;
 
-        // std::cout << std::endl;
-        // printf("Epoch %d - Average loss: %f\n", epoch + 1, avg_loss);
+        std::cout << std::endl;
     }
 }
 
