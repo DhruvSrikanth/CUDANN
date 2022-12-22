@@ -66,9 +66,9 @@ void train(const int n_classes, const int n_features, const double learning_rate
 int main(int argc, char *argv[]) {
     const int n_classes = 10;
     const int n_features = 28*28;
-    const int batch_size = 2;
+    const int batch_size = 64;
     const double learning_rate = 0.01;
-    const int n_batches = 10;
+    const int n_batches = 1000;
     const int epochs = 10;
 
     // Add layers

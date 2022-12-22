@@ -118,7 +118,6 @@ void train(const int n_classes, const int n_features, const double learning_rate
         // Compute average loss over a batch
         double avg_loss = 0.0;
         for (int mb = 0; mb < dataloader->n_batches; mb++) {
-            std::cout << "Epoch " << epoch << " - Batch " << mb << std::endl;
             // Get minibatch and copy it to the appropriate device
             Tensor *input = (Tensor*) malloc(sizeof(Tensor));
             Tensor *target = (Tensor*) malloc(sizeof(Tensor));
@@ -131,16 +130,16 @@ void train(const int n_classes, const int n_features, const double learning_rate
             // Compute loss
             Tensor *loss = criterion->forward(output, target);
             
-            // Compute the loss gradient
+            // // Compute the loss gradient
             Tensor *downstream_grad = criterion->backward();
 
-            // Backward pass
+            // // Backward pass
             model->backward(downstream_grad);
 
-            // Update weights
+            // // Update weights
             model->update_weights(learning_rate);
 
-            // Compute average loss
+            // // Compute average loss
             avg_loss += loss->sum() / loss->batch_size;
         }
         avg_loss /= dataloader->n_batches;
@@ -192,19 +191,21 @@ int main() {
 
     // Get dataloader
     int sample_index;
-    for (int i = 0; i < n_train_batches; i++) {
+    for (int mb = 0; mb < n_train_batches; mb++) {
         // Create minibatch
-        double *input = (double*) malloc(batch_size * dataset.train.image_size * sizeof(double));
+        double *input = (double*) malloc(batch_size * dataset.train.image_size * dataset.train.channels * sizeof(double));
         double *target = (double*) malloc(batch_size * sizeof(double));
         
-        for (int j = 0; j < batch_size; j++) {
-            sample_index = i * batch_size + j;
-            if (sample_index <  dataset.train.n_samples) {
-                for (int k = 0; k <  dataset.train.image_size; k++) {
-                    input[j *  dataset.train.image_size + k] = (double)  dataset.train.images[sample_index][k] / 255.0;
-                }
-                target[j] = (double)  dataset.train.labels[sample_index];
+        for (int s = 0; s < batch_size; s++) {
+            sample_index = mb * batch_size + s;
+            if (sample_index >= dataset.train.n_samples) {
+                break;
             }
+            for (int p = 0; p < dataset.train.image_size * dataset.train.channels; p++) {
+                input[s * dataset.train.image_size * dataset.train.channels + p] = dataset.train.images[sample_index][p];
+            }
+            target[s] = dataset.train.labels[sample_index];
+            
         }
         
         // Create tensor
@@ -213,11 +214,13 @@ int main() {
         
         // Create minibatch
         MiniBatch minibatch;
-        minibatch.input = &input_tensor;
-        minibatch.target = &target_tensor;
+        minibatch.input = (Tensor*) malloc(sizeof(Tensor));
+        minibatch.target = (Tensor*) malloc(sizeof(Tensor));
+        copy_tensor(minibatch.input, &input_tensor);
+        copy_tensor(minibatch.target, &target_tensor);
         
         // Add minibatch to dataloader 
-        train_dataloader.minibatches[i] = minibatch;
+        train_dataloader.minibatches[mb] = minibatch;
     }  
 
     // Create test dataloader
@@ -229,19 +232,21 @@ int main() {
     test_dataloader.n_batches = n_test_batches;
 
     // Get dataloader
-    for (int i = 0; i < n_test_batches; i++) {
+    for (int mb = 0; mb < n_test_batches; mb++) {
         // Create minibatch
-        double *input = (double*) malloc(batch_size * dataset.test.image_size * sizeof(double));
+        double *input = (double*) malloc(batch_size * dataset.test.image_size * dataset.test.channels * sizeof(double));
         double *target = (double*) malloc(batch_size * sizeof(double));
         
-        for (int j = 0; j < batch_size; j++) {
-            sample_index = i * batch_size + j;
-            if (sample_index <  dataset.test.n_samples) {
-                for (int k = 0; k <  dataset.test.image_size; k++) {
-                    input[j *  dataset.test.image_size + k] = (double)  dataset.test.images[sample_index][k] / 255.0;
-                }
-                target[j] = (double)  dataset.test.labels[sample_index];
+        for (int s = 0; s < batch_size; s++) {
+            sample_index = mb * batch_size + s;
+            if (sample_index >= dataset.test.n_samples) {
+                break;
             }
+            for (int p = 0; p < dataset.test.image_size * dataset.test.channels; p++) {
+                input[s * dataset.test.image_size * dataset.test.channels + p] = dataset.test.images[sample_index][p];
+            }
+            target[s] = dataset.test.labels[sample_index];
+            
         }
         
         // Create tensor
@@ -250,11 +255,13 @@ int main() {
         
         // Create minibatch
         MiniBatch minibatch;
-        minibatch.input = &input_tensor;
-        minibatch.target = &target_tensor;
+        minibatch.input = (Tensor*) malloc(sizeof(Tensor));
+        minibatch.target = (Tensor*) malloc(sizeof(Tensor));
+        copy_tensor(minibatch.input, &input_tensor);
+        copy_tensor(minibatch.target, &target_tensor);
         
         // Add minibatch to dataloader 
-        test_dataloader.minibatches[i] = minibatch;
+        test_dataloader.minibatches[mb] = minibatch;
     }
 
     // Create layers
@@ -274,7 +281,7 @@ int main() {
     CrossEntropy criterion("cross_entropy");
 
     // Train model
-    train(n_classes, n_features, learning_rate, epochs, &train_dataloader, &model, &criterion);
+    train(n_classes, n_features, learning_rate, epochs, &test_dataloader, &model, &criterion);
 
 
     return 0;
