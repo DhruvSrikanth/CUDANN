@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     const int epochs = 10;
 
     // Add layers
-    Linear linear1(n_features, 10, true, "random", "linear1");
+    Linear linear1(n_features, 128, true, "random", "linear1");
     ReLU relu1(128, "relu1");
     Linear linear2(128, n_classes, true, "random", "linear2");
     Softmax softmax(n_classes, "softmax");

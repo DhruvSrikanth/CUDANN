@@ -117,7 +117,25 @@ void train(const int n_classes, const int n_features, const double learning_rate
     for (int epoch = 0; epoch < epochs; epoch++) {
         // Compute average loss over a batch
         double avg_loss = 0.0;
+        float progress = 0.0;
+        int barWidth = 70;
         for (int mb = 0; mb < dataloader->n_batches; mb++) {
+            // std::cout << "Epoch: " << epoch + 1 << " - [";
+            // int pos = barWidth * progress;
+            // for (int i = 0; i < barWidth; ++i) {
+            //     if (i < pos) {
+            //         std::cout << "=";
+            //     } else if (i == pos) {
+            //         std::cout << ">";
+            //     } else {
+            //         std::cout << " ";
+            //     }
+            // }
+            // std::cout << "] - " << mb << "/" << dataloader->n_batches << " (" << int(progress * 100.0) << "%) " << "Mean Batch Loss: " << avg_loss << "\r";
+            // std::cout.flush();
+
+            // progress += (float) 1.0 / dataloader->n_batches;
+            
             // Get minibatch and copy it to the appropriate device
             Tensor *input = (Tensor*) malloc(sizeof(Tensor));
             Tensor *target = (Tensor*) malloc(sizeof(Tensor));
@@ -130,21 +148,23 @@ void train(const int n_classes, const int n_features, const double learning_rate
             // Compute loss
             Tensor *loss = criterion->forward(output, target);
             
-            // // Compute the loss gradient
+            // Compute the loss gradient
             Tensor *downstream_grad = criterion->backward();
 
-            // // Backward pass
+            // Backward pass
             model->backward(downstream_grad);
 
-            // // Update weights
+            // Update weights
             model->update_weights(learning_rate);
 
-            // // Compute average loss
+            // Compute average loss
             avg_loss += loss->sum() / loss->batch_size;
         }
+
         avg_loss /= dataloader->n_batches;
-        
-        printf("Epoch %d: Average loss: %f\n", epoch + 1, avg_loss);
+
+        // std::cout << std::endl;
+        // printf("Epoch %d - Average loss: %f\n", epoch + 1, avg_loss);
     }
 }
 
@@ -153,7 +173,7 @@ int main() {
     const int n_classes = 10;
     const int n_features = 28*28;
     const double learning_rate = 0.01;
-    const int epochs = 10;
+    const int epochs = 5;
 
     // Load MNIST dataset
     // Training set
@@ -194,7 +214,7 @@ int main() {
     for (int mb = 0; mb < n_train_batches; mb++) {
         // Create minibatch
         double *input = (double*) malloc(batch_size * dataset.train.image_size * dataset.train.channels * sizeof(double));
-        double *target = (double*) malloc(batch_size * sizeof(double));
+        double *target = (double*) malloc(batch_size * n_classes * sizeof(double));
         
         for (int s = 0; s < batch_size; s++) {
             sample_index = mb * batch_size + s;
@@ -202,15 +222,23 @@ int main() {
                 break;
             }
             for (int p = 0; p < dataset.train.image_size * dataset.train.channels; p++) {
+                // Image data is already normalized
                 input[s * dataset.train.image_size * dataset.train.channels + p] = dataset.train.images[sample_index][p];
             }
-            target[s] = dataset.train.labels[sample_index];
+            // Binarize labels
+            for (int c = 0; c < n_classes; c++) {
+                if (dataset.train.labels[sample_index] == c) {
+                    target[s * n_classes + c] = 1.0;
+                } else {
+                    target[s * n_classes + c] = 0.0;
+                }
+            }
             
         }
         
         // Create tensor
         Tensor input_tensor(batch_size, dataset.train.image_size, input);
-        Tensor target_tensor(batch_size, 1, target);
+        Tensor target_tensor(batch_size, n_classes, target);
         
         // Create minibatch
         MiniBatch minibatch;
@@ -235,7 +263,7 @@ int main() {
     for (int mb = 0; mb < n_test_batches; mb++) {
         // Create minibatch
         double *input = (double*) malloc(batch_size * dataset.test.image_size * dataset.test.channels * sizeof(double));
-        double *target = (double*) malloc(batch_size * sizeof(double));
+        double *target = (double*) malloc(batch_size * n_classes * sizeof(double));
         
         for (int s = 0; s < batch_size; s++) {
             sample_index = mb * batch_size + s;
@@ -243,15 +271,23 @@ int main() {
                 break;
             }
             for (int p = 0; p < dataset.test.image_size * dataset.test.channels; p++) {
+                // Image data is already normalized
                 input[s * dataset.test.image_size * dataset.test.channels + p] = dataset.test.images[sample_index][p];
             }
-            target[s] = dataset.test.labels[sample_index];
+            // Binarize labels
+            for (int c = 0; c < n_classes; c++) {
+                if (dataset.test.labels[sample_index] == c) {
+                    target[s * n_classes + c] = 1.0;
+                } else {
+                    target[s * n_classes + c] = 0.0;
+                }
+            }
             
         }
         
         // Create tensor
         Tensor input_tensor(batch_size, dataset.test.image_size, input);
-        Tensor target_tensor(batch_size, 1, target);
+        Tensor target_tensor(batch_size, n_classes, target);
         
         // Create minibatch
         MiniBatch minibatch;
@@ -264,8 +300,11 @@ int main() {
         test_dataloader.minibatches[mb] = minibatch;
     }
 
+
+
+    // Create Model
     // Create layers
-    Linear linear1(n_features, 10, true, "random", "linear1");
+    Linear linear1(n_features, 128, true, "random", "linear1");
     ReLU relu1(128, "relu1");
     Linear linear2(128, n_classes, true, "random", "linear2");
     Softmax softmax(n_classes, "softmax");
@@ -277,6 +316,7 @@ int main() {
     model.add_layer(&linear2);
     model.add_layer(&softmax);
 
+    // Define objective
     // Get loss function
     CrossEntropy criterion("cross_entropy");
 
