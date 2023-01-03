@@ -34,7 +34,7 @@ struct Dataloader {
 };
 
 
-void train(const int n_classes, const int n_features, const int n_batches, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
+void train(const int n_classes, const int n_features, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
     // Print model summary
     model->summary();
 
@@ -80,13 +80,13 @@ void train(const int n_classes, const int n_features, const int n_batches, const
 int main(int argc, char *argv[]) {
     const int n_classes = 10;
     const int n_features = 28*28;
-    const int batch_size = 2;
+    const int batch_size = 64;
     const double learning_rate = 0.01;
-    const int n_batches = 10;
+    const int n_batches = 1000;
     const int epochs = 10;
 
     // Add layers
-    Linear linear1(n_features, 10, true, "random", "linear1");
+    Linear linear1(n_features, 128, true, "random", "linear1");
     ReLU relu1(128, "relu1");
     Linear linear2(128, n_classes, true, "random", "linear2");
     Softmax softmax(n_classes, "softmax");
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Train the model
-    train(n_classes, n_features, n_batches, learning_rate, epochs, &dataloader, &model, &criterion);
+    train(n_classes, n_features, learning_rate, epochs, &dataloader, &model, &criterion);
 
     
     return 0;
@@ -137,27 +137,3 @@ int main(int argc, char *argv[]) {
 
 ```
 
-This is the output of the above code - 
-
-```bash
-=========================
-Model - NN
-=========================
-linear1: [784 -> 10]
-relu1: [128]
-linear2: [128 -> 10]
-softmax: [10]
-==========================
-Loss function: cross_entropy
-Training model for 10 epochs with learning rate 0.010000.
-Epoch 1: Average loss: 1.164237
-Epoch 2: Average loss: 1.171686
-Epoch 3: Average loss: 1.171686
-Epoch 4: Average loss: 1.169180
-Epoch 5: Average loss: 1.166300
-Epoch 6: Average loss: 1.184660
-Epoch 7: Average loss: 1.180385
-Epoch 8: Average loss: 1.162772
-Epoch 9: Average loss: 1.156481
-Epoch 10: Average loss: 1.156554
-```
