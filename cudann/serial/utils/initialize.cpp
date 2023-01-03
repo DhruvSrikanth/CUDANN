@@ -70,6 +70,6 @@ void initialize_random(double *x, const int size) {
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> d(0, 1);
     for (int i = 0; i < size; i++) {
-        x[i] = d(gen);
+        x[i] = d(gen) - 0.5;
     }
 }

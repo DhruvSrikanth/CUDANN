@@ -15,6 +15,16 @@ test_random:
 	cudann/test/test_random
 	rm cudann/test/test_random
 
+# Compile layers test
+compile_layers: cudann/test/test_layers.cpp
+	$(CC) -o cudann/test/test_layers cudann/test/test_layers.cpp $(CPP_FILES)
+
+# Compile and test layers
+test_layers:
+	make compile_layers
+	cudann/test/test_layers
+	rm cudann/test/test_layers
+
 # Compile mnist
 compile_mnist: cudann/test/test_mnist.cpp
 	$(CC) -o cudann/test/test_mnist cudann/test/test_mnist.cpp $(CPP_FILES)
