@@ -74,13 +74,13 @@ Tensor* Softmax::backward(const Tensor *upstream_grad) {
         free_tensor(this->downstream_grad);
     }
     this->downstream_grad = (Tensor*) malloc(sizeof(Tensor));
-    copy_tensor(this->downstream_grad, (const Tensor*) this->fx);
+    create_tensor(this->downstream_grad, upstream_grad->batch_size, this->n_classes);
 
     if (this->dfx != NULL) {
         free_tensor(this->dfx);
     }
     this->dfx = (Tensor*) malloc(sizeof(Tensor));
-    create_tensor(this->dfx, this->n_classes, this->n_classes);
+    create_tensor(this->dfx, upstream_grad->batch_size, this->n_classes * this->n_classes);
 
     // Compute softmax gradient
     softmax_gradient_batch(upstream_grad->data, this->fx->data, this->downstream_grad->data, this->dfx->data, size, this->n_classes);
