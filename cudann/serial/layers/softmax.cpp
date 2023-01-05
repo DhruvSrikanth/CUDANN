@@ -105,10 +105,18 @@ void softmax_activation_batch(const double *x, double *fx, const int size, const
 
 // Softmax activation - y = e^(x) / sum(e^(x))
 void softmax_activation(const int b, const double *x, double *fx, const int n_classes) {
+    // Compute max x for each batch (for numerical stability)
+    double max_x = x[b * n_classes];
+    for (int i = 0; i < n_classes; i++) {
+        if (x[b * n_classes + i] > max_x) {
+            max_x = x[b * n_classes + i];
+        }
+    }
+
     // Compute softmax activation
     double exp_sum = 0;
     for (int i = 0; i < n_classes; i++) {
-        fx[b * n_classes + i] = exp(x[b * n_classes + i]);
+        fx[b * n_classes + i] = exp(x[b * n_classes + i] - max_x);
         exp_sum += fx[b * n_classes + i];
     }
     for (int i = 0; i < n_classes; i++) {
