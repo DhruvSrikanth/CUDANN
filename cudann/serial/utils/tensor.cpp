@@ -70,17 +70,22 @@ void Tensor::clip(const double* min, const double* max) {
 
 // Print tensor
 void Tensor::print() {
+    print_array(this->data, this->batch_size, this->n_features);
+}
+
+// Print double array
+void print_array(const double *data, const int batch_size, const int n_features) {
     printf("\n[");
-    for (int b = 0; b < this->batch_size; b++) {
+    for (int b = 0; b < batch_size; b++) {
         printf("\n[");
-        for (int f = 0; f < this->n_features; f++) {
-            printf("%f", this->data[b * this->n_features + f]);
-            if (f < this->n_features - 1) {
+        for (int f = 0; f < n_features; f++) {
+            printf("%f", data[b * n_features + f]);
+            if (f < n_features - 1) {
                 printf(", ");
             }
         }
         printf("]");
-        if (b < this->batch_size - 1) {
+        if (b < batch_size - 1) {
             printf(", ");
         }
     }
