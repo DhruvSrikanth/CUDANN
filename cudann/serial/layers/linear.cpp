@@ -112,7 +112,7 @@ Tensor* Linear::backward(const Tensor *upstream_grad) {
     }
     
     // Compute linear transformation gradient
-    linear_transformation_gradient_batch(upstream_grad->data, this->out_features, this->in_features, this->weight, this->x->data, this->bias, this->dfx->data, this->dW, this->db, this->bias_flag, batch_size);
+    linear_transformation_gradient_batch(upstream_grad->data, this->out_features, this->in_features, this->weight, this->x->data, this->bias, this->dfx->data, this->dW, this->mean_dW, this->db, this->mean_db, this->bias_flag, batch_size);
 
     // Return output gradient
     return this->dfx;
@@ -120,24 +120,6 @@ Tensor* Linear::backward(const Tensor *upstream_grad) {
 
 // Update parameters of the layer and reset gradients
 void Linear::update_params(const double lr) {
-    const int batch_size = this->x->batch_size;
-
-    // Sum gradients over the batch and store in mean_dW and mean_db
-    for (int b = 0; b < batch_size; b++) {
-        for (int i = 0; i < this->in_features; i++) {
-            for (int j = 0; j < this->out_features; j++) {
-                this->mean_dW[i * this->out_features + j] += this->dW[(b * this->in_features * this->out_features) + (i * this->out_features) + j] / batch_size;
-            }
-        }
-
-        if (this->bias_flag) {
-            for (int i = 0; i < this->out_features; i++) {
-                this->mean_db[i] += this->db[(b * this->out_features) + i] / batch_size;
-            }
-        }
-    }
-
-
     // Update weights
     for (int i = 0; i < this->in_features; i++) {
         for (int j = 0; j < this->out_features; j++) {
@@ -187,12 +169,27 @@ void linear_transformation(const int b, const int out_features, const int in_fea
     
 }
 
-// Linear transformation gradient batch - dfx(b, in) = dfx(b`, out) x W(out x in)
-void linear_transformation_gradient_batch(const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double* db, const bool bias_flag, const int batch_size) {    
+// Linear transformation gradient batch - dfx(b, in) = dfx(b, out) x W(out x in)
+void linear_transformation_gradient_batch(const double *upstream_grad, const int out_features, const int in_features, const double* weight, const double* x, const double* bias, double* dfx, double* dW, double *mean_dW, double* db, double *mean_db, const bool bias_flag, const int batch_size) {    
     // Compute linear transformation gradient for the batch
     for (int b = 0; b < batch_size; b++) {
         // Compute linear transformation gradient for each example
         linear_transformation_gradient(b, upstream_grad, out_features, in_features, weight, x, bias, dfx, dW, db, bias_flag);
+    }
+
+    // Sum gradients over the batch and store in mean_dW and mean_db
+    for (int b = 0; b < batch_size; b++) {
+        for (int i = 0; i < in_features; i++) {
+            for (int j = 0; j < out_features; j++) {
+                mean_dW[i * out_features + j] += dW[(b * in_features * out_features) + (i * out_features) + j] / batch_size;
+            }
+        }
+
+        if (bias_flag) {
+            for (int i = 0; i < out_features; i++) {
+                mean_db[i] += db[(b * out_features) + i] / batch_size;
+            }
+        }
     }
 }
 
