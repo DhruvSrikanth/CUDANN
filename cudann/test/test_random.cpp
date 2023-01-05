@@ -50,7 +50,7 @@ void train(const int n_classes, const int n_features, const double learning_rate
             model->backward(downstream_grad);
 
             // Update weights
-            // model->update_weights(learning_rate);
+            model->update_weights(learning_rate);
 
             // Compute average loss
             avg_loss += loss->sum() / loss->batch_size;
