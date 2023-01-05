@@ -5,15 +5,6 @@ CPP_FILES := $(wildcard cudann/*/*/*.cpp)
 # Compiler flags
 CC_FLAGS = -O3
 
-# Compile random
-compile_random: cudann/test/test_random.cpp
-	$(CC) -o cudann/test/test_random cudann/test/test_random.cpp $(CPP_FILES)
-
-# Compile and test random
-test_random:
-	make compile_random
-	cudann/test/test_random
-	rm cudann/test/test_random
 
 # Compile layers test
 compile_layers: cudann/test/test_layers.cpp
@@ -24,6 +15,26 @@ test_layers:
 	make compile_layers
 	cudann/test/test_layers
 	rm cudann/test/test_layers
+
+# Compile model test
+compile_model: cudann/test/test_model.cpp
+	$(CC) -o cudann/test/test_model cudann/test/test_model.cpp $(CPP_FILES)
+
+# Compile and test model
+test_model:
+	make compile_model
+	cudann/test/test_model
+	rm cudann/test/test_model
+
+# Compile random
+compile_random: cudann/test/test_random.cpp
+	$(CC) -o cudann/test/test_random cudann/test/test_random.cpp $(CPP_FILES)
+
+# Compile and test random
+test_random:
+	make compile_random
+	cudann/test/test_random
+	rm cudann/test/test_random
 
 # Compile mnist
 compile_mnist: cudann/test/test_mnist.cpp

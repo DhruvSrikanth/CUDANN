@@ -35,6 +35,9 @@ class Softmax: public Layer {
         // Print layer name
         void show();
 
+        // Get layer type
+        std::string get_type();
+
         // Forward call
         Tensor* forward(const Tensor *input);
 

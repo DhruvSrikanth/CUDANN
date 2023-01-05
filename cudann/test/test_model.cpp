@@ -8,7 +8,14 @@ int main(int argc, char *argv[]) {
 
     // Create a model
     NN model;
-    Linear layer(in_features, out_features, true, "random", "layer1");
+    Linear linear(in_features, out_features, true, "random", "layer1");
+    Softmax softmax(out_features, "layer2");
+
+    // Add layers to model
+    model.add_layer(&linear);
+    model.add_layer(&softmax);
+
+    // Create input tensor
     double *data = (double*) malloc(in_features * batch_size * sizeof(double));
     initialize_random(data, in_features * batch_size);
     Tensor *input = (Tensor*) malloc(sizeof(Tensor));
@@ -18,12 +25,12 @@ int main(int argc, char *argv[]) {
     }
 
     // Forward pass
-    Tensor* output = layer.forward(input);
+    Tensor* output = model.forward(input);
     if (test_type == "forward") {
         output->print();
     }
 
-    // Backward pass
+    // Create gradient tensor
     double *grad = (double*) malloc(out_features * batch_size * sizeof(double));
     initialize_random(grad, out_features * batch_size);
     Tensor *grad_output = (Tensor*) malloc(sizeof(Tensor));
@@ -32,13 +39,11 @@ int main(int argc, char *argv[]) {
         grad_output->print();
     }
 
-    Tensor *grad_input = layer.backward(grad_output);
-    if (test_type == "backward") {
-        grad_input->print();
-    }
+    // Backward pass
+    model.backward(grad_output);
 
     // Update weights
-    layer.update_params(0.1);
+    model.update_weights(0.1);
 
     return 0;
 }

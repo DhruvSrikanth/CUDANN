@@ -28,7 +28,7 @@ void NN::summary() {
 // Add layer
 void NN::add_layer(const Layer *layer) {
     this->n_layers++;
-
+    
     this->layers = (Layer**) realloc(this->layers, this->n_layers * sizeof(Layer*));
     this->layers[this->n_layers - 1] = (Layer*) layer;
 }
@@ -57,7 +57,7 @@ void NN::backward(const Tensor *upstream_grad) {
 // Update weights
 void NN::update_weights(const double learning_rate) {
     for (int i = 0; i < this->n_layers; i++) {
-        if (this->layers[i]->type == "Linear") {
+        if (this->layers[i]->get_type() == "Linear") {
             this->layers[i]->update_params(learning_rate);
         }
     }

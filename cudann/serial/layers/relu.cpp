@@ -35,6 +35,10 @@ ReLU::~ReLU() {
 void ReLU::show() {
     std::printf("%s: [%d]\n", this->name.c_str(), this->n_features);
 }
+// Get layer type
+std::string ReLU::get_type() {
+    return this->type;
+}
 
 Tensor* ReLU::forward(const Tensor *input) {
     const int size = input->batch_size * this->n_features;

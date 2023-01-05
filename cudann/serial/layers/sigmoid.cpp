@@ -34,6 +34,11 @@ void Sigmoid::show() {
     std::printf("%s: [%d]\n", this->name.c_str(), this->n_features);
 }
 
+// Get layer type
+std::string Sigmoid::get_type() {
+    return this->type;
+}
+
 // Forward call
 Tensor* Sigmoid::forward(const Tensor *input) {
     const int size = input->batch_size * this->n_features;

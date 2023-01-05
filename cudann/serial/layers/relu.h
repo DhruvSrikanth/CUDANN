@@ -34,6 +34,9 @@ class ReLU: public Layer {
         // Print layer information
         void show();
 
+        // Get layer type
+        std::string get_type();
+
         // Forward call
         Tensor* forward(const Tensor *input);
 

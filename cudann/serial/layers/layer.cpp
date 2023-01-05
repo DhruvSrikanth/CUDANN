@@ -18,3 +18,8 @@ void Layer::update_params(const double learning_rate) {
     std::printf("Error: Method must be implemented in child class\n");
     return;
 }
+
+std::string Layer::get_type() {
+    std::printf("Error: Method must be implemented in child class\n");
+    return "Error";
+}

@@ -40,6 +40,11 @@ void Softmax::show() {
     std::printf("%s: [%d]\n", this->name.c_str(), this->n_classes);
 }
 
+// Get layer type
+std::string Softmax::get_type() {
+    return this->type;
+}
+
 // Forward call
 Tensor* Softmax::forward(const Tensor *input) {
     const int size = input->batch_size * this->n_classes;

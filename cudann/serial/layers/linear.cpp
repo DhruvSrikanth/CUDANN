@@ -68,6 +68,11 @@ void Linear::show() {
     std::printf("%s: [%d -> %d]\n", this->name.c_str(), this->in_features, this->out_features);
 }
 
+// Get layer type
+std::string Linear::get_type() {
+    return this->type;
+}
+
 // Forward call
 Tensor* Linear::forward(const Tensor *input) {
     // Size of the input
