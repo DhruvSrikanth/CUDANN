@@ -91,7 +91,7 @@ void ce_batch(const double *input, const double *target, double *fx, const int n
         ce(b, input, target, fx, n_features);
 
         // Compute mean across features
-        fx[b] /= n_features;
+        // fx[b] /= n_features;
     }
 }
 

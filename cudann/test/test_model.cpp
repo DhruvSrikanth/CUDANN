@@ -1,28 +1,39 @@
 #include "../serial/cudann.h"
 
 int main(int argc, char *argv[]) {
-    const int out_features = 3;
-    const int in_features = 2;
+    const int n_classes = 10;
+    const int n_features = 28*28;
     const int batch_size = 2;
-    std::string test_type = "backward";
+    const double learning_rate = 0.01;
+    const int n_batches = 1;
+    const int epochs = 5;
+    std::string test_type = "forward";
 
-    // Create a model
+    // Add layers
+    Linear linear1(n_features, 128, true, "random", "linear1");
+    ReLU relu1(128, "relu1");
+    Linear linear2(128, n_classes, true, "random", "linear2");
+    Softmax softmax(n_classes, "softmax");
+
+    // Create model and add layers
     NN model;
-    Linear linear(in_features, out_features, true, "random", "layer1");
-    Softmax softmax(out_features, "layer2");
-
-    // Add layers to model
-    model.add_layer(&linear);
+    model.add_layer(&linear1);
+    model.add_layer(&relu1);
+    model.add_layer(&linear2);
     model.add_layer(&softmax);
 
+    // Create loss
+    CrossEntropy criterion("cross_entropy");
+
     // Create input tensor
-    double *data = (double*) malloc(in_features * batch_size * sizeof(double));
-    initialize_random(data, in_features * batch_size);
+    double *data = (double*) malloc(batch_size*n_features*sizeof(double));
+    initialize_random(data, batch_size*n_features);
     Tensor *input = (Tensor*) malloc(sizeof(Tensor));
-    initialize_tensor(input, batch_size, in_features, data);
+    initialize_tensor(input, batch_size, n_features, data);
     if (test_type == "forward" || test_type == "backward") {
         input->print();
     }
+    
 
     // Forward pass
     Tensor* output = model.forward(input);
@@ -30,20 +41,29 @@ int main(int argc, char *argv[]) {
         output->print();
     }
 
-    // Create gradient tensor
-    double *grad = (double*) malloc(out_features * batch_size * sizeof(double));
-    initialize_random(grad, out_features * batch_size);
-    Tensor *grad_output = (Tensor*) malloc(sizeof(Tensor));
-    initialize_tensor(grad_output, batch_size, out_features, grad);
-    if (test_type == "backward") {
-        grad_output->print();
+    // Create target tensor
+    double *target_data = (double*) malloc(batch_size*n_classes*sizeof(double));
+    initialize_salt_and_pepper(target_data, batch_size*n_classes);
+    Tensor *target = (Tensor*) malloc(sizeof(Tensor));
+    initialize_tensor(target, batch_size, n_classes, target_data);
+    if (test_type == "forward" || test_type == "backward") {
+        target->print();
     }
 
+    // Compute loss
+    Tensor *loss = criterion.forward(output, target);
+    if (test_type == "forward") {
+        loss->print();
+    }
+    
+    // Compute the loss gradient
+    Tensor *downstream_grad = criterion.backward();
+
     // Backward pass
-    model.backward(grad_output);
+    model.backward(downstream_grad);
 
     // Update weights
-    model.update_weights(0.1);
+    model.update_weights(learning_rate);
 
     return 0;
 }

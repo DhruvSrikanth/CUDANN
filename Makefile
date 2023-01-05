@@ -16,6 +16,16 @@ test_layers:
 	cudann/test/test_layers
 	rm cudann/test/test_layers
 
+# Compile criterion test
+compile_criterion: cudann/test/test_criterion.cpp
+	$(CC) -o cudann/test/test_criterion cudann/test/test_criterion.cpp $(CPP_FILES)
+
+# Compile and test criterion
+test_criterion:
+	make compile_criterion
+	cudann/test/test_criterion
+	rm cudann/test/test_criterion
+
 # Compile model test
 compile_model: cudann/test/test_model.cpp
 	$(CC) -o cudann/test/test_model cudann/test/test_model.cpp $(CPP_FILES)
