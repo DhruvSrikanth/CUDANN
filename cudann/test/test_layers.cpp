@@ -38,5 +38,9 @@ int main(int argc, char *argv[]) {
         grad_input->print();
     }
 
+    printf("Weights: ");
+    // Update weights
+    layer.update_params(0.1);
+
     return 0;
 }
