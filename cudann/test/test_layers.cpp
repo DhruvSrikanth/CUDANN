@@ -2,9 +2,9 @@
 #include <cstring>
 
 int main(int argc, char *argv[]) {
-    const int out_features = 4;
+    const int out_features = 3;
     const int in_features = 2;
-    const int batch_size = 3;
+    const int batch_size = 2;
     std::string test_type = "forward";
 
     // Create a model

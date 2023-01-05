@@ -90,11 +90,6 @@ Tensor* Linear::forward(const Tensor *input) {
     // Compute linear transformation on the batch
     linear_transformation_batch(this->out_features, this->in_features, this->weight, this->x->data, this->bias, this->fx->data, this->bias_flag, input->batch_size);
 
-    this->x->print();
-    print_array(this->weight, this->out_features, this->in_features);
-    this->fx->print();
-
-
     // Return output
     return this->fx;
 }
@@ -180,7 +175,7 @@ void linear_transformation(const int b, const int out_features, const int in_fea
 
         // Compute linear transformation
         for (int j = 0; j < in_features; j++) {
-            fx[b * out_features + i] += x[b * in_features + j] * weight[j * out_features + i];
+            fx[b * out_features + i] += x[b * in_features + j] * weight[i * in_features + j];
         }
 
         // Add bias
