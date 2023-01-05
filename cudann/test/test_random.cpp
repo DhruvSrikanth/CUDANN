@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ctime>
 #include <time.h> 
-#include <unordered_map>
+#include <cmath>
 
 #include "../serial/cudann.h"
 
@@ -19,6 +19,15 @@ struct Dataloader {
     int n_batches;
 };
 
+// Check array for nan values
+bool check_array_for_nan(const double *array, const int size) {
+    for (int i = 0; i < size; i++) {
+        if (std::isnan(array[i])) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void train(const int n_classes, const int n_features, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
     // Print model summary
@@ -69,7 +78,7 @@ int main(int argc, char *argv[]) {
     const int batch_size = 64;
     const double learning_rate = 0.01;
     const int n_batches = 1000;
-    const int epochs = 10;
+    const int epochs = 5;
 
     // Add layers
     Linear linear1(n_features, 128, true, "random", "linear1");

@@ -1,6 +1,7 @@
 #include "nn.h"
 #include "../utils/tensor.h"
 #include "../layers/layer.h"
+#include <cmath>
 
 // Initialize the neural network
 NN::NN(const std::string name) {
@@ -32,6 +33,7 @@ void NN::add_layer(const Layer *layer) {
     this->layers = (Layer**) realloc(this->layers, this->n_layers * sizeof(Layer*));
     this->layers[this->n_layers - 1] = (Layer*) layer;
 }
+
 
 // Forward call
 Tensor* NN::forward(const Tensor *input) {

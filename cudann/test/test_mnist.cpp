@@ -112,10 +112,11 @@ void train(const int n_classes, const int n_features, const double learning_rate
     printf("Loss function: ");
     criterion->show();
 
-    printf("Training model for %d epochs with learning rate %f.\n", epochs, learning_rate);
-    // Train the model
     Tensor *input = (Tensor*) malloc(sizeof(Tensor));
     Tensor *target = (Tensor*) malloc(sizeof(Tensor));
+
+    printf("Training model for %d epochs with learning rate %f.\n", epochs, learning_rate);
+    // Train the model
     for (int epoch = 0; epoch < epochs; epoch++) {
         // Compute average loss over a batch
         double avg_loss = 0.0;
