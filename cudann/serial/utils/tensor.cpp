@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 
 // Tensor Constructor
 Tensor::Tensor(const int batch_size, const int n_features, const double *data) {
@@ -101,4 +102,19 @@ double Tensor::sum() {
         }
     }
     return sum_;
+}
+
+// Check array for nan values
+bool check_array_for_nan(const double *array, const int size) {
+    for (int i = 0; i < size; i++) {
+        if (std::isnan(array[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Check tensor for nan values
+bool Tensor::has_nan() {
+    return check_array_for_nan(this->data, this->batch_size * this->n_features);
 }

@@ -24,6 +24,9 @@ class Tensor {
         // Clip tensor data
         void clip(const double* min, const double* max);
 
+        // Check tensor data for NaN
+        bool has_nan();
+
         // Sum tensor data
         double sum();
 };
@@ -33,5 +36,6 @@ void copy_tensor(Tensor *dst, const Tensor *src);
 void create_tensor(Tensor *tensor, const int batch_size, const int n_features);
 void initialize_tensor(Tensor *tensor, const int batch_size, const int n_features, const double *data);
 void print_array(const double *data, const int batch_size, const int n_features);
+bool check_array_for_nan(const double *array, const int size);
 
 #endif

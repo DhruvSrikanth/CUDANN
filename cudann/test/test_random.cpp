@@ -4,7 +4,6 @@
 #include <iostream>
 #include <ctime>
 #include <time.h> 
-#include <cmath>
 
 #include "../serial/cudann.h"
 
@@ -18,16 +17,6 @@ struct Dataloader {
     MiniBatch *minibatches;
     int n_batches;
 };
-
-// Check array for nan values
-bool check_array_for_nan(const double *array, const int size) {
-    for (int i = 0; i < size; i++) {
-        if (std::isnan(array[i])) {
-            return true;
-        }
-    }
-    return false;
-}
 
 void train(const int n_classes, const int n_features, const double learning_rate, const int epochs, Dataloader *dataloader, NN *model, CrossEntropy *criterion) {
     // Print model summary
@@ -61,7 +50,7 @@ void train(const int n_classes, const int n_features, const double learning_rate
             model->backward(downstream_grad);
 
             // Update weights
-            model->update_weights(learning_rate);
+            // model->update_weights(learning_rate);
 
             // Compute average loss
             avg_loss += loss->sum() / loss->batch_size;
