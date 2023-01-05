@@ -104,19 +104,21 @@ int main(int argc, char *argv[]) {
         // Create random input tensor
         double *data = (double*) malloc(batch_size*n_features*sizeof(double));
         initialize_random(data, batch_size*n_features);
-        Tensor input(batch_size, n_features, data);
+        Tensor *input = (Tensor*) malloc(sizeof(Tensor));
+        initialize_tensor(input, batch_size, n_features, data);
 
         // Create the random target tensor
         double *target_data = (double*) malloc(batch_size*n_classes*sizeof(double));
         initialize_salt_and_pepper(target_data, batch_size*n_classes);
-        Tensor target(batch_size, n_classes, target_data);
+        Tensor *target = (Tensor*) malloc(sizeof(Tensor));
+        initialize_tensor(target, batch_size, n_classes, target_data);
 
         // Create minibatch
         MiniBatch minibatch;
         minibatch.input = (Tensor*) malloc(sizeof(Tensor));
         minibatch.target = (Tensor*) malloc(sizeof(Tensor));
-        copy_tensor(minibatch.input, &input);
-        copy_tensor(minibatch.target, &target);
+        copy_tensor(minibatch.input, input);
+        copy_tensor(minibatch.target, target);
 
         // Add minibatch to dataloader
         dataloader.minibatches[i] = minibatch;
