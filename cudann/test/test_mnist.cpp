@@ -303,16 +303,24 @@ int main() {
 
     // Create Model
     // Create layers
-    Linear linear1(n_features, 128, true, "random", "linear1");
-    ReLU relu1(128, "relu1");
-    Linear linear2(128, n_classes, true, "random", "linear2");
+    Linear linear1(n_features, 256, true, "random", "linear1");
+    Sigmoid sigmoid1(256, "sigmoid1");
+    Linear linear2(256, 128, true, "random", "linear2");
+    Sigmoid sigmoid2(128, "sigmoid2");
+    Linear linear3(128, 64, true, "random", "linear3");
+    Sigmoid sigmoid3(64, "sigmoid3");
+    Linear linear4(64, n_classes, true, "random", "linear4");
     Softmax softmax(n_classes, "softmax");
 
     // Create model and add layers
     NN model;
     model.add_layer(&linear1);
-    model.add_layer(&relu1);
+    model.add_layer(&sigmoid1);
     model.add_layer(&linear2);
+    model.add_layer(&sigmoid2);
+    model.add_layer(&linear3);
+    model.add_layer(&sigmoid3);
+    model.add_layer(&linear4);
     model.add_layer(&softmax);
 
     // Define objective
