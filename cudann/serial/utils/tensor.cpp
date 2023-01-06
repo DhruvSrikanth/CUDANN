@@ -118,3 +118,18 @@ bool check_array_for_nan(const double *array, const int size) {
 bool Tensor::has_nan() {
     return check_array_for_nan(this->data, this->batch_size * this->n_features);
 }
+
+// Get the argmax of the tensor
+void Tensor::argmax(int *b_argmax) {
+    for (int b = 0; b < this->batch_size; b++) {
+        double max = this->data[b * this->n_features];
+        int argmax = 0;
+        for (int f = 1; f < this->n_features; f++) {
+            if (this->data[b * this->n_features + f] > max) {
+                max = this->data[b * this->n_features + f];
+                argmax = f;
+            }
+        }
+        b_argmax[b] = argmax;
+    }
+}

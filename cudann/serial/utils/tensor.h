@@ -27,6 +27,9 @@ class Tensor {
         // Check tensor data for NaN
         bool has_nan();
 
+        // Get the argmax of the tensor
+        void argmax(int *b_argmax);
+
         // Sum tensor data
         double sum();
 };

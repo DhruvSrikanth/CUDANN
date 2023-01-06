@@ -120,8 +120,11 @@ void train(const int n_classes, const int n_features, const double learning_rate
     for (int epoch = 0; epoch < epochs; epoch++) {
         // Compute average loss over a batch
         double avg_loss = 0.0;
+        double mb_loss = 0.0;
+        double avg_acc = 0.0;
+        double mb_acc = 0.0;
         float progress = 0.0;
-        int barWidth = 70;
+        int barWidth = 50;
         for (int mb = 0; mb < dataloader->n_batches; mb++) {
             std::cout << "Epoch: " << epoch + 1 << " - [";
             int pos = barWidth * progress;
@@ -134,7 +137,7 @@ void train(const int n_classes, const int n_features, const double learning_rate
                     std::cout << " ";
                 }
             }
-            std::cout << "] - " << mb << "/" << dataloader->n_batches << " (" << int(progress * 100.0) << "%) " << "Average Loss: " << (double) avg_loss / mb << "\r";
+            std::cout << "] - " << mb << "/" << dataloader->n_batches << " (" << int(progress * 100.0) << "%) " << "| Average Loss: " << mb_loss << " Average Accuracy: " << mb_acc * 100 << "% | " << "\r";
             std::cout.flush();
 
             progress += (float) 1.0 / dataloader->n_batches;
@@ -159,20 +162,32 @@ void train(const int n_classes, const int n_features, const double learning_rate
             model->update_weights(learning_rate);
 
             // Compute average loss
-            avg_loss += loss->sum() / loss->batch_size;
+            mb_loss = (loss->sum() / loss->batch_size);
+            avg_loss += mb_loss;
+
+            // Compute accuracy
+            int *argmax = (int*) malloc(sizeof(int) * output->batch_size);
+            output->argmax(argmax);
+            pmf_to_class_pred(output, argmax);
+            mb_acc = compare_one_hots(output, target);
+            avg_acc += mb_acc;
         }
+
         avg_loss /= dataloader->n_batches;
+        avg_acc /= dataloader->n_batches;
 
         std::cout << std::endl;
+
+        printf("| Epoch Summary: Epoch %d - Average Loss: %f - Average Accuracy: %f% |\n", epoch + 1, avg_loss, avg_acc * 100);
     }
 }
 
 int main() {
-    const int batch_size = 64;
+    const int batch_size = 128;
     const int n_classes = 10;
     const int n_features = 28*28;
-    const double learning_rate = 0.01;
-    const int epochs = 5;
+    const double learning_rate = 0.02;
+    const int epochs = 10;
 
     // Load MNIST dataset
     // Training set
