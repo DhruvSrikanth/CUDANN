@@ -95,7 +95,7 @@ void sigmoid_activation_batch(const double *x, double *fx, const int size, const
 void sigmoid_activation(const int b, const double *x, double *fx, const int n_features) {
     // Compute sigmoid activation
     for (int i = 0; i < n_features; i++) {
-        fx[b * n_features + i] = 1 / (1 + exp(-x[b * n_features + i]));
+        fx[b * n_features + i] = 1.0 / (1.0 + exp(-x[b * n_features + i]));
     }
 }
 
@@ -112,6 +112,6 @@ void sigmoid_gradient_batch(const double *fx, double *dfx, const int size, const
 void sigmoid_gradient(const int b, const double *fx, double *dfx, const int n_features) {
     // Compute sigmoid gradient
     for (int i = 0; i < n_features; i++) {
-        dfx[b * n_features + i] *= fx[b * n_features + i] * (1 - fx[b * n_features + i]);
+        dfx[b * n_features + i] *= (fx[b * n_features + i] * (1 - fx[b * n_features + i]));
     }
 }
