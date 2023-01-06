@@ -102,7 +102,7 @@ void relu_activation(const int b, const double *x, double *fx, const int n_featu
         if (x[b*n_features + i] > 0) {
             fx[b*n_features + i] = x[b*n_features + i];
         } else {
-            fx[b*n_features + i] = 0;
+            fx[b*n_features + i] = 0.0;
         }
     }
 }
@@ -121,9 +121,9 @@ void relu_gradient(const int b, const double *x, double *dfx, const int n_featur
     // Perform ReLU gradient
     for (int i = 0; i < n_features; i++) {
         if (x[b*n_features + i] > 0) {
-            dfx[b*n_features + i] = dfx[b*n_features + i] * 1;
+            dfx[b*n_features + i] = dfx[b*n_features + i] * 1.0;
         } else {
-            dfx[b*n_features + i] = dfx[b*n_features + i] * 0;
+            dfx[b*n_features + i] = dfx[b*n_features + i] * 0.0;
         }
     }
 }

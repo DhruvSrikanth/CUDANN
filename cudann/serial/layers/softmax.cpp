@@ -114,7 +114,7 @@ void softmax_activation(const int b, const double *x, double *fx, const int n_cl
     }
 
     // Compute softmax activation
-    double exp_sum = 0;
+    double exp_sum = 0.0;
     for (int i = 0; i < n_classes; i++) {
         fx[b * n_classes + i] = exp(x[b * n_classes + i] - max_x);
         exp_sum += fx[b * n_classes + i];
@@ -128,9 +128,16 @@ void softmax_activation(const int b, const double *x, double *fx, const int n_cl
 void softmax_gradient_batch(const double* upstream_grad, const double *fx, double* downstream_grad, double *dfx, const int size, const int n_classes) {
     // Compute softmax gradient
     const int batch_size = size / n_classes;
+
     for (int b = 0; b < batch_size; b++) {
         softmax_gradient(b, upstream_grad, fx, downstream_grad, dfx, n_classes);
     }
+
+    if (check_array_for_nan(downstream_grad, batch_size * n_classes)) {
+        printf("Softmax: Downstream gradient contains NaN\n");
+        exit(1);
+    }
+
 }
 
 // Softmax gradient - y = fx * upstream_grad * (1 - fx) when i = j, y = -fx * upstream_grad * fx when i != j
@@ -148,7 +155,7 @@ void softmax_gradient(const int b, const double* upstream_grad, const double *fx
 
     // Compute downstream gradient
     for (int i = 0; i < n_classes; i++) {
-        downstream_grad[b * n_classes + i] = 0;
+        downstream_grad[b * n_classes + i] = 0.0;
         for (int j = 0; j < n_classes; j++) {
             downstream_grad[b * n_classes + i] += dfx[(b * n_classes * n_classes) + (i * n_classes) + j] * upstream_grad[b * n_classes + j];
         }

@@ -130,7 +130,7 @@ void Linear::update_params(const double lr) {
         for (int j = 0; j < this->out_features; j++) {
             this->weight[i * this->out_features + j] -= lr * this->mean_dW[i * this->out_features + j];
             // Reset mean_dW
-            this->mean_dW[i * this->out_features + j] = 0;
+            this->mean_dW[i * this->out_features + j] = 0.0;
         }
     }
 
